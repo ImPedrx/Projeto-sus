@@ -40,3 +40,10 @@ desktop.ini
 # Agent workspaces / local state
 .claude/settings.local.json
 .superpowers/
+
+# Next.js / TypeScript build artifacts
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+coverage/
+!.env.local.example
