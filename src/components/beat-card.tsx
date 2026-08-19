@@ -3,7 +3,9 @@
 import Image from "next/image";
 import { formatPrice, formatDuration } from "@/lib/beats/format";
 import { waveformFor } from "@/lib/beats/waveform";
+import { useState } from "react";
 import { usePreviewPlayer } from "@/components/preview-player";
+import { BeatDialog } from "@/components/beat-dialog";
 import type { StoreBeat } from "@/lib/beats/queries";
 import { copyFor, type Locale } from "@/lib/i18n";
 
@@ -15,6 +17,7 @@ export function BeatCard({
   locale: Locale;
 }) {
   const t = copyFor(locale);
+  const [expanded, setExpanded] = useState(false);
   const { playingId, toggle } = usePreviewPlayer();
   const playing = playingId === beat.id;
   const bars = waveformFor(beat.slug, 56);
@@ -27,7 +30,12 @@ export function BeatCard({
 
   return (
     <article className="group flex flex-col border border-border bg-surface transition-colors hover:border-muted">
-      <div className="relative aspect-square overflow-hidden bg-surface-raised">
+      <button
+        type="button"
+        onClick={() => setExpanded(true)}
+        aria-label={`${t.cardExpand}: ${beat.title}`}
+        className="relative aspect-square w-full cursor-pointer overflow-hidden bg-surface-raised text-left"
+      >
         {beat.coverUrl ? (
           <Image
             src={beat.coverUrl}
@@ -56,11 +64,21 @@ export function BeatCard({
         <span className="mono absolute top-3 left-3 bg-background/80 px-2 py-1 text-[10px] text-muted backdrop-blur">
           {beat.categories[0]?.name ?? t.cardNoCategory}
         </span>
-      </div>
+
+        <span className="mono absolute right-3 bottom-3 border border-border bg-background/80 px-2 py-1 text-[10px] opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
+          {t.cardExpand}
+        </span>
+      </button>
 
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="display text-lg">{beat.title}</h3>
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="display cursor-pointer text-left text-lg hover:underline"
+          >
+            {beat.title}
+          </button>
           <span className="mono shrink-0 text-sm">{formatPrice(beat.priceCents)}</span>
         </div>
 
@@ -110,6 +128,13 @@ export function BeatCard({
           {meta.length ? meta.join(" · ") : t.cardNoMeta}
         </p>
       </div>
+
+      <BeatDialog
+        beat={beat}
+        locale={locale}
+        open={expanded}
+        onClose={() => setExpanded(false)}
+      />
     </article>
   );
 }

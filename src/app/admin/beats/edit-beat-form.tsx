@@ -16,6 +16,7 @@ export function EditBeatForm({
     priceCents: number;
     bpm: number | null;
     musicalKey: string | null;
+    description: string | null;
     categoryIds: number[];
   };
   action: (formData: FormData) => Promise<Result>;
@@ -83,6 +84,20 @@ export function EditBeatForm({
             className={field}
           />
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="description" className="block text-sm text-muted">
+          Descrição (opcional)
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          rows={4}
+          maxLength={600}
+          defaultValue={beat.description ?? ""}
+          className={`${field} resize-y`}
+        />
       </div>
 
       <fieldset className="space-y-2">

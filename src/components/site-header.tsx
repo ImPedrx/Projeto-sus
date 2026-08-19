@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { copyFor, pathFor, type Locale } from "@/lib/i18n";
+import { CartButton } from "@/components/cart/cart-button";
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const t = copyFor(locale);
@@ -37,6 +38,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             >
               {t.navLogin}
             </Link>
+            <CartButton locale={locale} />
           </nav>
         </div>
       </div>

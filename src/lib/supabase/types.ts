@@ -54,6 +54,7 @@ export type Database = {
           bpm: number | null;
           musical_key: string | null;
           duration_seconds: number | null;
+          description: string | null;
           cover_path: string | null;
           preview_path: string;
           master_mp3_path: string;
@@ -70,6 +71,7 @@ export type Database = {
           bpm?: number | null;
           musical_key?: string | null;
           duration_seconds?: number | null;
+          description?: string | null;
           cover_path?: string | null;
           preview_path: string;
           master_mp3_path: string;
@@ -86,6 +88,7 @@ export type Database = {
           bpm?: number | null;
           musical_key?: string | null;
           duration_seconds?: number | null;
+          description?: string | null;
           cover_path?: string | null;
           preview_path?: string;
           master_mp3_path?: string;

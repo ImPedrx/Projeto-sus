@@ -22,6 +22,7 @@ export async function createBeat(formData: FormData) {
     priceCents: Math.round(Number(priceText) * 100),
     bpm: parseOptionalInt(formData.get("bpm")),
     musicalKey: String(formData.get("musicalKey") ?? "").trim() || null,
+    description: String(formData.get("description") ?? "").trim() || null,
     categoryIds: formData.getAll("categoryIds").map((value) => Number(value)),
   });
 
@@ -65,6 +66,7 @@ export async function createBeat(formData: FormData) {
       price_cents: parsed.data.priceCents,
       bpm: parsed.data.bpm,
       musical_key: parsed.data.musicalKey,
+      description: parsed.data.description,
       preview_path: paths.preview!,
       master_mp3_path: paths.mp3!,
       master_wav_path: paths.wav ?? null,
@@ -118,6 +120,7 @@ export async function updateBeat(id: number, formData: FormData) {
     priceCents: Math.round(Number(priceText) * 100),
     bpm: parseOptionalInt(formData.get("bpm")),
     musicalKey: String(formData.get("musicalKey") ?? "").trim() || null,
+    description: String(formData.get("description") ?? "").trim() || null,
     categoryIds: formData.getAll("categoryIds").map((value) => Number(value)),
   });
 
@@ -131,6 +134,7 @@ export async function updateBeat(id: number, formData: FormData) {
       price_cents: parsed.data.priceCents,
       bpm: parsed.data.bpm,
       musical_key: parsed.data.musicalKey,
+      description: parsed.data.description,
     })
     .eq("id", id);
 

@@ -68,6 +68,20 @@ export function BeatForm({
         </div>
       </div>
 
+      <div className="space-y-2">
+        <label htmlFor="description" className="block text-sm text-muted">
+          Descrição (opcional)
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          rows={4}
+          maxLength={600}
+          placeholder="Do que esse beat é feito, para quem serve, referências."
+          className={`${field} resize-y`}
+        />
+      </div>
+
       <fieldset className="space-y-2">
         <legend className="text-sm text-muted">Categorias</legend>
         {categories.map((category) => (

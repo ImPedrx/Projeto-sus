@@ -1,6 +1,8 @@
 import { headers } from "next/headers";
 import { SiteHeader } from "@/components/site-header";
 import { PreviewPlayerProvider } from "@/components/preview-player";
+import { CartProvider } from "@/components/cart/cart-provider";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 import { copyFor, localeFromPathname } from "@/lib/i18n";
 
 export default async function SiteLayout({
@@ -16,7 +18,8 @@ export default async function SiteLayout({
 
   return (
     <PreviewPlayerProvider>
-      <div className="flex min-h-screen flex-col">
+      <CartProvider>
+        <div className="flex min-h-screen flex-col">
         <SiteHeader locale={locale} />
         <div className="flex-1">{children}</div>
         <footer className="border-t border-border">
@@ -25,7 +28,9 @@ export default async function SiteLayout({
             <span>{new Date().getFullYear()}</span>
           </div>
         </footer>
-      </div>
+        </div>
+        <CartDrawer locale={locale} />
+      </CartProvider>
     </PreviewPlayerProvider>
   );
 }

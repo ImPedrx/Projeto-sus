@@ -51,6 +51,10 @@ export type StoreBeat = {
   bpm: number | null;
   musicalKey: string | null;
   durationSeconds: number | null;
+  description: string | null;
+  // Only whether a WAV exists, never its path: the master lives in the private
+  // bucket and nothing public should carry a pointer to it.
+  hasWav: boolean;
   coverUrl: string | null;
   previewUrl: string | null;
   categories: StoreCategory[];
@@ -64,6 +68,8 @@ type RawStoreRow = {
   bpm: number | null;
   musical_key: string | null;
   duration_seconds: number | null;
+  description: string | null;
+  master_wav_path: string | null;
   cover_path: string | null;
   preview_path: string;
   beat_categories: Array<{ categories: StoreCategory | null }> | null;
@@ -78,6 +84,8 @@ export function toStoreBeat(row: RawStoreRow, projectUrl: string): StoreBeat {
     bpm: row.bpm,
     musicalKey: row.musical_key,
     durationSeconds: row.duration_seconds,
+    description: row.description,
+    hasWav: Boolean(row.master_wav_path),
     coverUrl: publicAssetUrl(projectUrl, row.cover_path),
     previewUrl: publicAssetUrl(projectUrl, row.preview_path),
     categories: (row.beat_categories ?? [])
@@ -87,7 +95,7 @@ export function toStoreBeat(row: RawStoreRow, projectUrl: string): StoreBeat {
 }
 
 const STORE_COLUMNS =
-  "id, title, slug, price_cents, bpm, musical_key, duration_seconds, cover_path, preview_path, beat_categories(categories(name, slug))";
+  "id, title, slug, price_cents, bpm, musical_key, duration_seconds, description, master_wav_path, cover_path, preview_path, beat_categories(categories(name, slug))";
 
 // RLS already restricts anonymous reads to published beats; the status filter
 // keeps the intent legible at the call site and lets the partial index serve it.

@@ -34,6 +34,11 @@ export const beatInputSchema = z.object({
     .trim()
     .max(10, "Use no máximo 10 caracteres no tom.")
     .nullable(),
+  description: z
+    .string()
+    .trim()
+    .max(600, "A descrição deve ter no máximo 600 caracteres.")
+    .nullable(),
   categoryIds: z
     .array(z.number().int().positive())
     .min(1, "Escolha ao menos uma categoria."),

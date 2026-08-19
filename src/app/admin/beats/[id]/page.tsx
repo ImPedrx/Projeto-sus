@@ -15,7 +15,9 @@ export default async function EditBeatPage({
   const [{ data: beat }, { data: categories }] = await Promise.all([
     supabase
       .from("beats")
-      .select("id, title, price_cents, bpm, musical_key, beat_categories(category_id)")
+      .select(
+        "id, title, price_cents, bpm, musical_key, description, beat_categories(category_id)",
+      )
       .eq("id", beatId)
       .single(),
     supabase.from("categories").select("id, name").order("name"),
@@ -33,6 +35,7 @@ export default async function EditBeatPage({
           priceCents: beat.price_cents,
           bpm: beat.bpm,
           musicalKey: beat.musical_key,
+          description: beat.description,
           categoryIds: (beat.beat_categories ?? []).map((link) => link.category_id),
         }}
         action={updateBeat.bind(null, beatId)}
