@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
   experimental: {
     // Audio masters are far larger than the 1 MB default for server actions.
     serverActions: { bodySizeLimit: "150mb" },
+    // A second, separate cap: because this app has a proxy, Next buffers each
+    // request body in memory so both the proxy and the action can read it, and
+    // that buffer defaults to 10 MB. Past it the body is silently truncated and
+    // the action's multipart parser dies with "Unexpected end of form".
+    // It has to sit above the largest upload, not above the largest file.
+    proxyClientMaxBodySize: "120mb",
   },
   images: {
     // Cover art is served from the project's public storage bucket.
