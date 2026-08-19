@@ -18,14 +18,12 @@ export default async function AdminLayout({
   } = await supabase.auth.getUser();
   if (!user) redirect("/admin/login");
 
-  // Being signed in is not the same as being an admin. RLS hides every draft
-  // from a non-admin, so probing for drafts is the cheapest admin check that
-  // matches what the policies actually allow.
-  const { error } = await supabase
-    .from("beats")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "draft");
-  if (error) redirect("/admin/login");
+  // Being signed in is not the same as being an admin, and RLS cannot tell the
+  // two apart on its own: it hides drafts from a signed-in non-admin without
+  // raising an error, so an empty result would let them into the shell. Ask
+  // the database outright instead.
+  const { data: isAdmin, error } = await supabase.rpc("is_admin");
+  if (error || !isAdmin) redirect("/admin/login");
 
   return (
     <div className="min-h-screen">
