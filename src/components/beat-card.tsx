@@ -5,8 +5,16 @@ import { formatPrice, formatDuration } from "@/lib/beats/format";
 import { waveformFor } from "@/lib/beats/waveform";
 import { usePreviewPlayer } from "@/components/preview-player";
 import type { StoreBeat } from "@/lib/beats/queries";
+import { copyFor, type Locale } from "@/lib/i18n";
 
-export function BeatCard({ beat }: { beat: StoreBeat }) {
+export function BeatCard({
+  beat,
+  locale,
+}: {
+  beat: StoreBeat;
+  locale: Locale;
+}) {
+  const t = copyFor(locale);
   const { playingId, toggle } = usePreviewPlayer();
   const playing = playingId === beat.id;
   const bars = waveformFor(beat.slug, 56);
@@ -46,7 +54,7 @@ export function BeatCard({ beat }: { beat: StoreBeat }) {
         )}
 
         <span className="mono absolute top-3 left-3 bg-background/80 px-2 py-1 text-[10px] text-muted backdrop-blur">
-          {beat.categories[0]?.name ?? "sem categoria"}
+          {beat.categories[0]?.name ?? t.cardNoCategory}
         </span>
       </div>
 
@@ -61,7 +69,7 @@ export function BeatCard({ beat }: { beat: StoreBeat }) {
             type="button"
             onClick={() => beat.previewUrl && toggle(beat.id, beat.previewUrl)}
             disabled={!beat.previewUrl}
-            aria-label={playing ? `Pausar ${beat.title}` : `Ouvir ${beat.title}`}
+            aria-label={playing ? t.cardPauseLabel(beat.title) : t.cardPlayLabel(beat.title)}
             className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-40"
           >
             {playing ? (
@@ -93,13 +101,13 @@ export function BeatCard({ beat }: { beat: StoreBeat }) {
             </div>
           ) : (
             <span className="mono flex-1 text-[11px] text-muted">
-              {playing ? "tocando preview" : "ouvir preview"}
+              {playing ? t.cardPlaying : t.cardPlay}
             </span>
           )}
         </div>
 
         <p className="mono mt-auto border-t border-border pt-3 text-[11px] text-muted">
-          {meta.length ? meta.join(" · ") : "sem metadados"}
+          {meta.length ? meta.join(" · ") : t.cardNoMeta}
         </p>
       </div>
     </article>
