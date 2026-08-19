@@ -53,3 +53,5 @@ APLICAR-NO-SUPABASE.sql
 
 # Local audio scratch: beats pulled off YouTube for the seed, not source code.
 Musicas/
+
+.env*
