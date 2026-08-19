@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    // Audio masters are far larger than the 1 MB default for server actions.
+    serverActions: { bodySizeLimit: "150mb" },
+  },
 };
 
 export default nextConfig;
