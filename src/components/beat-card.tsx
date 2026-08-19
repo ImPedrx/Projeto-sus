@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { formatPrice, formatDuration } from "@/lib/beats/format";
 import { waveformFor } from "@/lib/beats/waveform";
 import { useState } from "react";
 import { usePreviewPlayer } from "@/components/preview-player";
 import { BeatDialog } from "@/components/beat-dialog";
+import TiltedCard from "@/components/TiltedCard/TiltedCard";
 import type { StoreBeat } from "@/lib/beats/queries";
 import { copyFor, type Locale } from "@/lib/i18n";
 
@@ -30,19 +30,30 @@ export function BeatCard({
 
   return (
     <article className="group flex flex-col border border-border bg-surface transition-colors hover:border-muted">
-      <button
-        type="button"
+      {/* Not a <button>: TiltedCard renders a <figure>, which cannot legally
+          sit inside one. The title below is already a button, so the keyboard
+          route to the dialog is unchanged. */}
+      <div
         onClick={() => setExpanded(true)}
-        aria-label={`${t.cardExpand}: ${beat.title}`}
-        className="relative aspect-square w-full cursor-pointer overflow-hidden bg-surface-raised text-left"
+        className={`relative aspect-square w-full cursor-pointer bg-surface-raised ${
+          // The tilt lifts and rotates the art, so it needs room inside the
+          // frame; without the inset it swings past the card's own border.
+          beat.coverUrl ? "p-3" : ""
+        }`}
       >
         {beat.coverUrl ? (
-          <Image
-            src={beat.coverUrl}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover grayscale transition-transform duration-500 group-hover:scale-105"
+          <TiltedCard
+            imageSrc={beat.coverUrl}
+            altText={beat.title}
+            containerHeight="100%"
+            containerWidth="100%"
+            imageHeight="100%"
+            imageWidth="100%"
+            rotateAmplitude={14}
+            scaleOnHover={1.06}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={false}
           />
         ) : (
           // No cover art is the common case early on. Rather than a placeholder
@@ -68,7 +79,7 @@ export function BeatCard({
         <span className="mono absolute right-3 bottom-3 border border-border bg-background/80 px-2 py-1 text-[10px] opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
           {t.cardExpand}
         </span>
-      </button>
+      </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
