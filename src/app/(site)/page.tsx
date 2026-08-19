@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { listPublishedBeats, listCategories } from "@/lib/beats/queries";
 import { BeatCard } from "@/components/beat-card";
-import { Waveform } from "@/components/waveform";
+import { BlackHole } from "@/components/black-hole";
 
 export default async function HomePage() {
   const supabase = await createServerClient();
@@ -13,8 +13,14 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-6 pt-20 pb-10 md:pt-28">
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <BlackHole className="opacity-90" />
+        {/* Two scrims: one keeps the flush-left type off the bright rim, the other
+            fades the field out before the section below it. */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
+
+        <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-14 md:pt-28">
           <p className="mono text-[11px] text-muted">Produção musical · SusProd</p>
 
           <h1 className="display mt-6 text-[clamp(2.25rem,10.5vw,9rem)]">
@@ -25,11 +31,7 @@ export default async function HomePage() {
             emergência
           </h1>
 
-          <div className="mt-10 h-16 md:h-24">
-            <Waveform seed="susprod" bars={96} />
-          </div>
-
-          <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="mt-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <p className="max-w-md text-muted">
               Beats prontos para gravar, com preview no navegador e entrega do
               arquivo sem tag depois da compra.
