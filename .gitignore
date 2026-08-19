@@ -50,3 +50,6 @@ coverage/
 
 # Cópia temporária das migrations para colar no dashboard
 APLICAR-NO-SUPABASE.sql
+
+# Local audio scratch: beats pulled off YouTube for the seed, not source code.
+Musicas/
