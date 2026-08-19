@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/types";
+import { publicAssetUrl } from "@/lib/beats/storage";
 
 export type BeatStatus = "draft" | "published" | "sold";
 
@@ -38,4 +39,96 @@ export async function listBeatsForAdmin(
       .map((link) => link.categories?.name)
       .filter((name): name is string => Boolean(name)),
   }));
+}
+
+export type StoreCategory = { name: string; slug: string };
+
+export type StoreBeat = {
+  id: number;
+  title: string;
+  slug: string;
+  priceCents: number;
+  bpm: number | null;
+  musicalKey: string | null;
+  durationSeconds: number | null;
+  coverUrl: string | null;
+  previewUrl: string | null;
+  categories: StoreCategory[];
+};
+
+type RawStoreRow = {
+  id: number;
+  title: string;
+  slug: string;
+  price_cents: number;
+  bpm: number | null;
+  musical_key: string | null;
+  duration_seconds: number | null;
+  cover_path: string | null;
+  preview_path: string;
+  beat_categories: Array<{ categories: StoreCategory | null }> | null;
+};
+
+export function toStoreBeat(row: RawStoreRow, projectUrl: string): StoreBeat {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    priceCents: row.price_cents,
+    bpm: row.bpm,
+    musicalKey: row.musical_key,
+    durationSeconds: row.duration_seconds,
+    coverUrl: publicAssetUrl(projectUrl, row.cover_path),
+    previewUrl: publicAssetUrl(projectUrl, row.preview_path),
+    categories: (row.beat_categories ?? [])
+      .map((link) => link.categories)
+      .filter((category): category is StoreCategory => Boolean(category)),
+  };
+}
+
+const STORE_COLUMNS =
+  "id, title, slug, price_cents, bpm, musical_key, duration_seconds, cover_path, preview_path, beat_categories(categories(name, slug))";
+
+// RLS already restricts anonymous reads to published beats; the status filter
+// keeps the intent legible at the call site and lets the partial index serve it.
+export async function listPublishedBeats(
+  supabase: SupabaseClient<Database>,
+  options: { categorySlug?: string; limit?: number } = {},
+): Promise<StoreBeat[]> {
+  let query = supabase
+    .from("beats")
+    .select(STORE_COLUMNS)
+    .eq("status", "published")
+    .order("created_at", { ascending: false });
+
+  if (options.limit) query = query.limit(options.limit);
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const beats = ((data ?? []) as unknown as RawStoreRow[]).map((row) =>
+    toStoreBeat(row, projectUrl),
+  );
+
+  // Filtering here rather than in SQL keeps the join shape intact: a nested
+  // filter would drop the beat's other categories from the response.
+  return options.categorySlug
+    ? beats.filter((beat) =>
+        beat.categories.some((category) => category.slug === options.categorySlug),
+      )
+    : beats;
+}
+
+export async function listCategories(
+  supabase: SupabaseClient<Database>,
+): Promise<StoreCategory[]> {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("name, slug")
+    .order("position")
+    .order("name");
+
+  if (error) throw error;
+  return data ?? [];
 }

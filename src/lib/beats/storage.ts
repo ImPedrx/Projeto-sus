@@ -21,3 +21,13 @@ export function storagePathFor(
   const extension = filename.slice(filename.lastIndexOf(".") + 1).toLowerCase();
   return `${FOLDERS[kind]}/${slug}.${extension}`;
 }
+
+const PUBLIC_BUCKET = "beat-public";
+
+export function publicAssetUrl(
+  projectUrl: string,
+  path: string | null | undefined,
+): string | null {
+  if (!path) return null;
+  return `${projectUrl.replace(/\/+$/, "")}/storage/v1/object/public/${PUBLIC_BUCKET}/${path}`;
+}
