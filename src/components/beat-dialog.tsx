@@ -62,8 +62,20 @@ export function BeatDialog({
         // backdrop; anything inside hits a child first.
         if (event.target === ref.current) onClose();
       }}
-      className="relative m-auto w-[min(64rem,92vw)] border border-border bg-surface p-0 text-foreground backdrop:bg-background/80 backdrop:backdrop-blur-sm"
+      className="relative m-auto max-h-[90svh] w-[min(64rem,92vw)] overflow-y-auto border border-border bg-surface p-0 text-foreground backdrop:bg-background/80 backdrop:backdrop-blur-sm"
     >
+      {/* First in the DOM, not just first on screen: showModal() focuses the
+          earliest focusable child and scrolls it into view, so a close button
+          declared last would open the dialog already scrolled to the bottom. */}
+      <button
+        type="button"
+        autoFocus
+        onClick={onClose}
+        className="mono absolute top-4 left-4 z-10 border border-border bg-background/80 px-2 py-1 text-[11px] text-muted backdrop-blur transition-colors hover:text-foreground"
+      >
+        {t.dialogClose}
+      </button>
+
       <div className="grid gap-0 md:grid-cols-2">
         <div className="relative aspect-square bg-surface-raised">
           {beat.coverUrl ? (
@@ -139,14 +151,6 @@ export function BeatDialog({
           </div>
         </div>
       </div>
-
-      <button
-        type="button"
-        onClick={onClose}
-        className="mono absolute top-4 left-4 border border-border bg-background/80 px-2 py-1 text-[11px] text-muted backdrop-blur transition-colors hover:text-foreground"
-      >
-        {t.dialogClose}
-      </button>
     </dialog>
   );
 }
