@@ -64,7 +64,10 @@ export function EditBeatForm({
           <input
             id="bpm"
             name="bpm"
-            inputMode="numeric"
+            type="number"
+            min={40}
+            max={300}
+            step={1}
             defaultValue={beat.bpm ?? ""}
             className={field}
           />

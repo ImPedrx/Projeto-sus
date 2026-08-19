@@ -42,3 +42,33 @@ describe("beatInputSchema", () => {
     expect(result.success).toBe(true);
   });
 });
+
+describe("beatInputSchema mensagens", () => {
+  function firstError(input: Record<string, unknown>) {
+    const result = beatInputSchema.safeParse(input);
+    return result.success ? null : result.error.issues[0].message;
+  }
+
+  it("explains a bpm that is not a number", () => {
+    expect(firstError({ ...valid, bpm: Number("seila") })).toBe(
+      "Informe o BPM em números, entre 40 e 300.",
+    );
+  });
+
+  it("explains a bpm outside the usable range", () => {
+    expect(firstError({ ...valid, bpm: 12 })).toBe("O BPM mínimo é 40.");
+    expect(firstError({ ...valid, bpm: 999 })).toBe("O BPM máximo é 300.");
+  });
+
+  it("explains a price that is not a number", () => {
+    expect(firstError({ ...valid, priceCents: Number("dez reais") })).toBe(
+      "Informe o preço em números, por exemplo 199,00.",
+    );
+  });
+
+  it("explains a musical key that is too long", () => {
+    expect(firstError({ ...valid, musicalKey: "x".repeat(11) })).toBe(
+      "Use no máximo 10 caracteres no tom.",
+    );
+  });
+});

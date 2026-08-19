@@ -49,7 +49,16 @@ export function BeatForm({
           <label htmlFor="bpm" className="block text-sm text-muted">
             BPM
           </label>
-          <input id="bpm" name="bpm" inputMode="numeric" className={field} />
+          <input
+            id="bpm"
+            name="bpm"
+            type="number"
+            min={40}
+            max={300}
+            step={1}
+            placeholder="140"
+            className={field}
+          />
         </div>
         <div className="space-y-2">
           <label htmlFor="musicalKey" className="block text-sm text-muted">
