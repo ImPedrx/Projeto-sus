@@ -5,6 +5,11 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
+  // Next blocks cross-origin requests to dev assets, and a phone on the LAN
+  // reaches the server by IP rather than localhost. Without this the pages
+  // render but every client chunk 403s, so nothing hydrates: no player, no
+  // cart, no tilt.
+  allowedDevOrigins: ['10.253.1.187', '10.253.1.*', '127.0.0.1'],
   experimental: {
     // Audio masters are far larger than the 1 MB default for server actions.
     serverActions: { bodySizeLimit: "150mb" },
