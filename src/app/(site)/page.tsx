@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { listPublishedBeats, listCategories } from "@/lib/beats/queries";
 import { BeatCard } from "@/components/beat-card";
-import { BlackHole } from "@/components/black-hole";
+import MoltenMetal from "@/components/MoltenMetal/MoltenMetal";
 
 export default async function HomePage() {
   const supabase = await createServerClient();
@@ -14,10 +14,30 @@ export default async function HomePage() {
   return (
     <main>
       <section className="relative isolate overflow-hidden border-b border-border">
-        <BlackHole className="opacity-90" />
-        {/* Two scrims: one keeps the flush-left type off the bright rim, the other
-            fades the field out before the section below it. */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+        <div className="absolute inset-0">
+          <MoltenMetal
+            color1="#4c4c4c"
+            color2="#4a4a4a"
+            color3="#FFFFFF"
+            speed={0.35}
+            scale={4}
+            detail={3}
+            glow={1.6}
+            coreSize={0.1}
+            swirl={1}
+            fold={-0.2}
+            blackPoint={0.05}
+            brightness={1.3}
+            colorMode="molten"
+            grain={true}
+            grainIntensity={0.05}
+            mouseInteraction={true}
+            mouseStrength={0.3}
+            opacity={1.0}
+          />
+        </div>
+        {/* The field is dark enough on its own; only the bottom edge needs to
+            fade so it does not butt against the section below. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
 
         <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-14 md:pt-28">

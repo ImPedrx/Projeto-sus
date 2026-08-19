@@ -33,6 +33,9 @@ const eslintConfig = defineConfig([
     ".warp/**",
     ".windsurf/**",
     ".github/prompts/**",
+    // Vendored from the React Bits registry; edits here would be lost on
+    // reinstall, so it is not held to this project's rules.
+    "src/components/MoltenMetal/**",
   ]),
 ]);
 
