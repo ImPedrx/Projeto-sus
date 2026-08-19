@@ -15,7 +15,7 @@ export async function Home({ locale }: { locale: Locale }) {
 
   return (
     <main>
-      <section className="relative isolate overflow-hidden border-b border-border">
+      <section className="relative isolate flex min-h-[calc(100svh-var(--header-h))] flex-col justify-center overflow-hidden border-b border-border">
         <div className="absolute inset-0">
           <MoltenMetal
             color1="#4c4c4c"
@@ -42,7 +42,7 @@ export async function Home({ locale }: { locale: Locale }) {
             fade so it does not butt against the section below. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
 
-        <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-14 md:pt-28">
+        <div className="relative mx-auto w-full max-w-6xl px-6 py-16">
           <p className="mono text-[11px] text-muted">{t.heroEyebrow}</p>
 
           <h1 className="display mt-6 text-[clamp(1.9rem,5.5vw,4.25rem)]">

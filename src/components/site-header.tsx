@@ -8,7 +8,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 h-[var(--header-h)]">
         <Link href={pathFor(locale, "home")} className="display text-lg tracking-tight">
           SUSPROD<span className="text-muted">_</span>
         </Link>
