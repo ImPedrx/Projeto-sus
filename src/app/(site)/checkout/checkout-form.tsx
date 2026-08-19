@@ -61,12 +61,14 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
     );
   }
 
+  // Two columns only once there is room for both: at the md breakpoint the
+  // 20rem summary was pushed past the edge of the viewport.
   return (
-    <div className="grid gap-10 md:grid-cols-[1fr_20rem]">
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <form action={onSubmit} className="flex flex-col gap-5">
-        <Field name="customerName" label={t.checkoutName} required maxLength={80} autoComplete="name" />
+        <Field name="customerName" optionalLabel={t.fieldOptional} label={t.checkoutName} required maxLength={80} autoComplete="name" />
         <Field
-          name="customerEmail"
+          name="customerEmail" optionalLabel={t.fieldOptional}
           label={t.checkoutEmail}
           hint={t.checkoutEmailHint}
           required
@@ -74,11 +76,14 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
           maxLength={120}
           autoComplete="email"
         />
-        <Field name="artistName" label={t.checkoutArtist} maxLength={80} />
-        <Field name="instagram" label={t.checkoutInstagram} maxLength={80} placeholder="@" />
+        <Field name="artistName" optionalLabel={t.fieldOptional} label={t.checkoutArtist} maxLength={80} />
+        <Field name="instagram" optionalLabel={t.fieldOptional} label={t.checkoutInstagram} maxLength={80} placeholder="@" />
 
         <label className="flex flex-col gap-2">
-          <span className="mono text-[11px] text-muted">{t.checkoutNote}</span>
+          <span className="mono text-[11px] text-muted">
+            {t.checkoutNote}
+            <span className="normal-case"> ({t.fieldOptional})</span>
+          </span>
           <textarea
             name="note"
             rows={4}
@@ -138,17 +143,19 @@ function Field({
   name,
   label,
   hint,
+  optionalLabel,
   ...props
 }: {
   name: string;
   label: string;
   hint?: string;
+  optionalLabel: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="flex flex-col gap-2">
       <span className="mono text-[11px] text-muted">
         {label}
-        {!props.required && " ·"}
+        {!props.required && <span className="normal-case"> ({optionalLabel})</span>}
       </span>
       <input
         name={name}
