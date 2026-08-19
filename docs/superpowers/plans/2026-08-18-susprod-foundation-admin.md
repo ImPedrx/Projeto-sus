@@ -2245,3 +2245,36 @@ Everything below needs `.env.local` with a real project URL and anon key:
 - Task 3 step 11, Task 4 step 11, Task 5 step 12, Task 6 step 9: the by-hand
   verification of sign-in, the admin gate, category CRUD, upload (including the
   check that a logged-out visitor cannot fetch a private master) and publishing.
+
+## Status (2026-08-19)
+
+Plan 1 is done and verified against the live project (`lhvrhtlidsskcayraljk`).
+Migrations 0001–0004 are applied; `admin_users` holds SusProd's account; one
+beat is published with a working preview.
+
+Verified from outside the app, with the publishable key:
+
+- `anon` reads published beats and categories, and gets an empty result on
+  `admin_users`.
+- `anon` writes are refused: `42501 row-level security`.
+- The preview streams from `beat-public` (HTTP 200, `audio/mpeg`).
+- The master exists in `beat-private` and `anon` cannot fetch it, by public URL
+  or by API key.
+
+Beyond the plan, the storefront now exists: a `(site)` route group with a hero,
+a catalog at `/projetos`, expandable beat cards with an optional description, a
+cart in localStorage, and an English mirror under `/en`. Checkout is deliberately
+inert — that is plan 3.
+
+### Environment traps worth remembering
+
+- The repository moved to `C:\dev\Projeto-sus`: Next 16's prerender workers fail
+  when the project path contains a space.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` holds the **publishable** key. The legacy
+  service_role key leaked into a commit once and was purged from history; the
+  legacy JWT keys should stay disabled.
+- Three separate size limits govern uploads: `serverActions.bodySizeLimit`,
+  `experimental.proxyClientMaxBodySize` (10 MB by default, truncates silently),
+  and whatever the host imposes in production.
+- `allowedDevOrigins` must list any origin other than localhost — a phone on the
+  LAN otherwise gets 403 on every client chunk and nothing hydrates.
