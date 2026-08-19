@@ -1,0 +1,22 @@
+{
+  "producerTagline": "Beats & Production",
+  "effectiveDate": "1 September 2026",
+  "compositionTitle": "Name of the beat",
+  "songwriter": "Producer's legal name",
+  "licenseeName": "Buyer's legal name",
+  "licenseeAlias": "Buyer's artist name",
+  "licenseeAddress": "Street, number, city, postcode, country",
+  "licensorName": "Producer's legal name",
+  "licensorAlias": "SUS",
+  "licensorAddress": "Street, number, city, postcode, country",
+  "copies": "50,000",
+  "fee": "USD 150.00",
+  "videoStreams": "500,000",
+  "radioStations": "two (2)",
+  "creditName": "SUS",
+  "payableTo": "Producer's legal name",
+  "infringementLaw": "applicable copyright law",
+  "governingLaw": "the State of Bahia, Brazil",
+  "licenseePublishing": "80.00% of publishing rights",
+  "licensorPublishing": "20.00% of publishing rights"
+}

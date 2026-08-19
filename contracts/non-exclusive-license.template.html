@@ -1,0 +1,372 @@
+<meta charset="utf-8" />
+<title>Non-Exclusive License Agreement</title>
+<style>
+  /* Print geometry. The margins leave room for the running footer Playwright
+     draws, so the last line of a clause never collides with the page number. */
+  @page {
+    size: A4;
+    margin: 18mm 20mm 22mm 20mm;
+  }
+
+  :root {
+    --ink: #111111;
+    --muted: #5b5b5b;
+    --rule: #cfcfcf;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    /* A serif reads better than a sans over long legal paragraphs, and it is
+       what the counterparty expects a contract to look like. */
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: var(--ink);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16mm;
+    padding-bottom: 4mm;
+    border-bottom: 1.2pt solid var(--ink);
+    margin-bottom: 8mm;
+  }
+
+  .wordmark {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 15pt;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .wordmark span { color: var(--muted); }
+
+  .wordmark small {
+    display: block;
+    margin-top: 2mm;
+    font-size: 6.6pt;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+  }
+
+  .doc-title {
+    text-align: right;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .doc-title h1 {
+    margin: 0;
+    font-size: 12pt;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .doc-title p {
+    margin: 1.5mm 0 0;
+    font-size: 7.6pt;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .reissue {
+    margin: 0 0 6mm;
+    padding: 3mm 4mm;
+    border: 0.8pt solid var(--rule);
+    background: #f6f6f6;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8pt;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .preamble {
+    margin: 0 0 5mm;
+    text-align: justify;
+  }
+
+  .parties {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 6mm;
+    font-size: 9.6pt;
+  }
+
+  .parties th {
+    width: 22mm;
+    padding: 1.6mm 0;
+    text-align: left;
+    vertical-align: top;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 7.6pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .parties td {
+    padding: 1.6mm 0;
+    vertical-align: top;
+    border-bottom: 0.5pt solid var(--rule);
+  }
+
+  ol.clauses {
+    margin: 0;
+    padding-left: 6mm;
+  }
+
+  ol.clauses > li {
+    /* A clause that breaks across pages is hard to read and easy to dispute,
+       so each one is kept whole wherever it fits. */
+    break-inside: avoid;
+    margin-bottom: 4mm;
+    text-align: justify;
+  }
+
+  ol.clauses > li::marker {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9pt;
+    color: var(--muted);
+  }
+
+  .clause-name {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 9.4pt;
+    letter-spacing: 0.01em;
+  }
+
+  .split {
+    margin-top: 3mm;
+    padding-left: 4mm;
+    border-left: 1.2pt solid var(--rule);
+    font-size: 9.8pt;
+  }
+
+  .split div { padding: 0.6mm 0; }
+
+  .execution {
+    break-inside: avoid;
+    margin-top: 8mm;
+    padding-top: 5mm;
+    border-top: 1.2pt solid var(--ink);
+  }
+
+  .execution p {
+    margin: 0 0 7mm;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 8.4pt;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .signatures {
+    display: flex;
+    gap: 14mm;
+  }
+
+  .signature { flex: 1; }
+
+  .signature .line {
+    height: 12mm;
+    border-bottom: 0.8pt solid var(--ink);
+  }
+
+  .signature .who {
+    margin-top: 2mm;
+    font-size: 9.6pt;
+    font-weight: 700;
+  }
+
+  .signature .role,
+  .signature .dateline {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 7.8pt;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .signature .dateline { margin-top: 4mm; }
+</style>
+
+<header>
+  <div class="wordmark">
+    SUSPROD<span>_</span>
+    <small>{{producerTagline}}</small>
+  </div>
+  <div class="doc-title">
+    <h1>Non-Exclusive License Agreement</h1>
+    <p>Sound Recording · Beats</p>
+  </div>
+</header>
+
+{{reissueNotice}}
+
+<p class="preamble">
+  This License Agreement (the &ldquo;Agreement&rdquo;) is made on {{effectiveDate}}
+  (the &ldquo;Effective Date&rdquo;) between the parties identified below. The
+  Licensor warrants that, as of and prior to the Effective Date, it controls the
+  mechanical rights in and to the copyrighted musical work entitled
+  <strong>{{compositionTitle}}</strong> (the &ldquo;Composition&rdquo;). The
+  Composition, including the music thereof, was composed by {{songwriter}} (the
+  &ldquo;Songwriter&rdquo;) and is managed under the Licensor.
+</p>
+
+<table class="parties">
+  <tr>
+    <th>Licensee</th>
+    <td>
+      <strong>{{licenseeName}}</strong>{{licenseeAliasPhrase}}<br />
+      {{licenseeAddress}}
+    </td>
+  </tr>
+  <tr>
+    <th>Licensor</th>
+    <td>
+      <strong>{{licensorName}}</strong>{{licensorAliasPhrase}}<br />
+      {{licensorAddress}}
+    </td>
+  </tr>
+</table>
+
+<ol class="clauses">
+  <li>
+    <span class="clause-name">Master Use.</span> The Licensor grants to the
+    Licensee a non-exclusive license (this &ldquo;License&rdquo;) to record vocal
+    synchronization to the Composition, in part or in its entirety and
+    substantially in its original form (the &ldquo;Master Recording&rdquo;).
+  </li>
+
+  <li>
+    <span class="clause-name">Mechanical Rights.</span> The Licensor grants to
+    the Licensee a non-exclusive license to use the Master Recording in the
+    reproduction, duplication, manufacture and distribution of phonograph
+    records, cassette tapes, compact discs, digital downloads and other
+    miscellaneous audio and digital recordings, and any lifts and versions
+    thereof (collectively, the &ldquo;Recordings&rdquo;, and individually, a
+    &ldquo;Recording&rdquo;), worldwide, up to a total of {{copies}} copies of
+    such Recordings or any combination thereof, conditioned upon payment to the
+    Licensor of {{fee}}, receipt of which is confirmed.
+  </li>
+
+  <li>
+    <span class="clause-name">Performance Rights.</span> The Licensor grants to
+    the Licensee a non-exclusive license to use the Master Recording in unlimited
+    non-profit performances, shows or concerts. The Licensee may not receive
+    compensation from performances under this License.
+  </li>
+
+  <li>
+    <span class="clause-name">Synchronization Rights.</span> The Licensor grants
+    limited synchronization rights for one (1) music video streamed online
+    (YouTube, Vimeo and similar services) for up to {{videoStreams}} streams in
+    total across all websites. A separate synchronization license must be
+    purchased for distribution of video to television, film or video games.
+  </li>
+
+  <li>
+    <span class="clause-name">Broadcast Rights.</span> The Licensor grants to the
+    Licensee a non-exclusive license to broadcast or air the Master Recording on
+    {{radioStations}} radio stations, through {{radioStations}} station channels
+    respectively. The Licensee may not receive compensation for such
+    broadcasting.
+  </li>
+
+  <li>
+    <span class="clause-name">Credit.</span> The Licensee shall acknowledge the
+    original authorship of the Composition appropriately and reasonably in all
+    media and performance formats, under the name &ldquo;{{creditName}}&rdquo;,
+    in writing where possible and vocally otherwise.
+  </li>
+
+  <li>
+    <span class="clause-name">Consideration.</span> In consideration for the
+    rights granted under this Agreement, the Licensee shall pay to the Licensor
+    the sum of {{fee}} and other good and valuable consideration, payable to
+    &ldquo;{{payableTo}}&rdquo;, receipt of which is hereby acknowledged. If the
+    Licensee fails to account to the Licensor, to complete the payments provided
+    for hereunder in a timely manner, or to perform its other obligations
+    hereunder, including by reason of insufficient bank balance, the Licensor
+    shall have the right to terminate this License upon written notice to the
+    Licensee. Such termination shall render the recording, manufacture and
+    distribution of Recordings for which monies have not been paid subject to and
+    actionable as infringements under applicable law, including, without
+    limitation, {{infringementLaw}}.
+  </li>
+
+  <li>
+    <span class="clause-name">Delivery.</span> The Composition shall be delivered
+    by email to an address provided by the Licensee to the Licensor. The Licensee
+    shall receive an email containing an attachment or a link from which the
+    Composition can be downloaded.
+  </li>
+
+  <li>
+    <span class="clause-name">Indemnification.</span> The Licensee agrees to
+    indemnify and hold the Licensor harmless from and against any and all claims,
+    losses, damages, costs and expenses, including, without limitation,
+    reasonable attorneys&rsquo; fees, arising out of or resulting from a claimed
+    breach of any of the Licensee&rsquo;s representations, warranties or
+    agreements hereunder.
+  </li>
+
+  <li>
+    <span class="clause-name">Audio Samples.</span> Clearance of third-party
+    samples is the responsibility of the Licensee.
+  </li>
+
+  <li>
+    <span class="clause-name">Miscellaneous.</span> This License is
+    non-transferable and is limited to the Composition specified above. It does
+    not convey or grant any right of public performance for profit. It
+    constitutes the entire agreement between the Licensor and the Licensee
+    relating to the Composition, and is binding upon both parties and their
+    respective successors, assigns and legal representatives.
+  </li>
+
+  <li>
+    <span class="clause-name">Governing Law.</span> This License is governed by
+    and shall be construed under the laws of {{governingLaw}}, without regard to
+    its conflict of laws principles.
+  </li>
+
+  <li>
+    <span class="clause-name">Publishing.</span> Publishing rights in the
+    Composition are held as follows:
+    <div class="split">
+      <div>{{licenseeName}} &mdash; {{licenseePublishing}}</div>
+      <div>{{licensorName}} &mdash; {{licensorPublishing}}</div>
+    </div>
+  </li>
+</ol>
+
+<div class="execution">
+  <p>The parties have duly executed this Agreement on the date first written above.</p>
+
+  <div class="signatures">
+    <div class="signature">
+      <div class="line"></div>
+      <div class="who">{{licensorName}}</div>
+      <div class="role">Licensor &middot; Producer &middot; Authorized Signing Officer</div>
+      <div class="dateline">Date: _______ / _______ / __________</div>
+    </div>
+
+    <div class="signature">
+      <div class="line"></div>
+      <div class="who">{{licenseeName}}</div>
+      <div class="role">Licensee &middot; Artist &middot; Authorized Signing Officer</div>
+      <div class="dateline">Date: _______ / _______ / __________</div>
+    </div>
+  </div>
+</div>
