@@ -2210,3 +2210,38 @@ git commit -m "feat: add beat list, editing and publishing to the admin area"
 - `npm test` and `npm run build` both pass.
 
 Plan 2 (public storefront) starts from here and reads only published beats, their categories, and the public bucket.
+
+---
+
+## Status (2026-08-18)
+
+Tasks 1–6 are implemented and committed. `npm test` (36 specs), `npm run build`
+and `npm run lint` all pass.
+
+Three deviations from the plan as written, each forced by the environment:
+
+- **Next.js 16, not 15.** `create-next-app` installed 16.3.1, which renamed
+  Middleware to Proxy — the session refresher is `src/proxy.ts`, not
+  `src/middleware.ts`. The helper it calls is still `src/lib/supabase/middleware.ts`.
+- **Delete and publish run from client components.** The plan bound the server
+  actions straight to `<form action>`, but those actions return a result, which
+  React's form-action type rejects — and binding them would have swallowed the
+  error messages the actions are written to produce. `DeleteCategoryButton` and
+  `BeatRowActions` call the actions and render the error.
+- **`src/lib/supabase/types.ts` is hand-written** from `0001_initial_schema.sql`
+  so the app could be typed before the Supabase project was reachable. Replace it
+  with `npx supabase gen types typescript --project-id <ref>` output.
+
+The repository also moved to `C:\dev\Projeto-sus`: Next 16's prerender workers
+fail with `InvariantError: Expected workStore to be initialized` when the project
+path contains a space, which the old path under `Windows Lite BR` did.
+
+### Blocked on a live Supabase project
+
+Everything below needs `.env.local` with a real project URL and anon key:
+
+- Task 2 steps 4–8: apply both migrations, create the admin account, verify that
+  `anon` cannot read drafts or `admin_users`, generate the real database types.
+- Task 3 step 11, Task 4 step 11, Task 5 step 12, Task 6 step 9: the by-hand
+  verification of sign-in, the admin gate, category CRUD, upload (including the
+  check that a logged-out visitor cannot fetch a private master) and publishing.
