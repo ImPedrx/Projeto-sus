@@ -52,7 +52,7 @@ export function BeatCard({ beat }: { beat: StoreBeat }) {
 
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="display text-xl">{beat.title}</h3>
+          <h3 className="display text-lg">{beat.title}</h3>
           <span className="mono shrink-0 text-sm">{formatPrice(beat.priceCents)}</span>
         </div>
 

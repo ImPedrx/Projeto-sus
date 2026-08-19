@@ -19,7 +19,7 @@ export default async function ProjetosPage({
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="display text-[clamp(2.5rem,8vw,5rem)]">Projetos</h1>
+      <h1 className="display text-[clamp(1.75rem,4vw,2.75rem)]">Projetos</h1>
 
       {categories.length > 0 && (
         <div className="mt-8 flex flex-wrap gap-2">

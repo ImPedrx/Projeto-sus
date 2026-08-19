@@ -23,7 +23,7 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-14 md:pt-28">
           <p className="mono text-[11px] text-muted">Produção musical · SusProd</p>
 
-          <h1 className="display mt-6 text-[clamp(2.25rem,10.5vw,9rem)]">
+          <h1 className="display mt-6 text-[clamp(1.9rem,5.5vw,4.25rem)]">
             Seu som
             <br />
             entra em
@@ -60,7 +60,7 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 className="display text-3xl">Últimos beats</h2>
+          <h2 className="display text-2xl">Últimos beats</h2>
           <Link href="/projetos" className="mono text-xs text-muted hover:text-foreground">
             ver todos
           </Link>
