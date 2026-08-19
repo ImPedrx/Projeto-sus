@@ -12,6 +12,27 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The repository vendors an agent skill library across a dozen editor
+    // directories. Those scripts are prompts and tooling, not app code, and
+    // linting them buries the app's own findings under thousands of errors.
+    ".agents/**",
+    ".augment/**",
+    ".claude/**",
+    ".codebuddy/**",
+    ".codewhale/**",
+    ".continue/**",
+    ".cursor/**",
+    ".factory/**",
+    ".gemini/**",
+    ".kilocode/**",
+    ".kiro/**",
+    ".opencode/**",
+    ".qoder/**",
+    ".roo/**",
+    ".trae/**",
+    ".warp/**",
+    ".windsurf/**",
+    ".github/prompts/**",
   ]),
 ]);
 
