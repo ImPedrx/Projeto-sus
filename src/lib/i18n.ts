@@ -1,14 +1,14 @@
 export const locales = ["pt", "en"] as const;
 export type Locale = (typeof locales)[number];
 
-export type Page = "home" | "catalog";
+export type Page = "home" | "catalog" | "checkout";
 
 // Portuguese lives at the root and English under /en, so the Brazilian
 // audience keeps the clean URLs and search engines still get a real address
 // for each language.
 const PATHS: Record<Locale, Record<Page, string>> = {
-  pt: { home: "/", catalog: "/projetos" },
-  en: { home: "/en", catalog: "/en/projects" },
+  pt: { home: "/", catalog: "/projetos", checkout: "/checkout" },
+  en: { home: "/en", catalog: "/en/projects", checkout: "/en/checkout" },
 };
 
 export function pathFor(locale: Locale, page: Page): string {
@@ -64,9 +64,30 @@ export const dictionary = {
     cartEmpty: "Seu carrinho está vazio. Escolha um beat para começar.",
     cartRemove: "Remover",
     cartTotalLabel: "Total",
-    cartCheckout: "Finalizar compra",
-    cartCheckoutSoon: "O checkout entra no ar em breve.",
+    cartCheckout: "Finalizar pedido",
     cartOpen: "Abrir carrinho",
+    checkoutTitle: "Fechar pedido",
+    checkoutLead:
+      "Confira os beats e deixe seu contato. O produtor responde por e-mail para combinar a forma de pagamento e enviar os arquivos.",
+    checkoutEmpty: "Seu carrinho está vazio. Escolha um beat antes de fechar o pedido.",
+    checkoutName: "Nome",
+    checkoutEmail: "E-mail",
+    checkoutEmailHint: "É por aqui que o produtor responde.",
+    checkoutArtist: "Nome artístico",
+    checkoutInstagram: "Instagram",
+    checkoutNote: "Recado (opcional)",
+    checkoutSummary: "Seu pedido",
+    checkoutSubmit: "Enviar pedido",
+    checkoutSending: "Enviando...",
+    checkoutDisclaimer:
+      "Isto é um pedido, não uma cobrança. Nada é debitado agora: o produtor confirma a disponibilidade e combina o pagamento direto com você.",
+    confirmEyebrow: "Pedido registrado",
+    confirmTitle: "Recebemos seu pedido",
+    confirmLead:
+      "Guarde este código — é por ele que o produtor identifica seu pedido quando responder.",
+    confirmPayment:
+      "O contato chega no e-mail que você informou, com a forma de pagamento e o envio dos arquivos. Se não aparecer, confira a caixa de spam.",
+    confirmBack: "Voltar ao catálogo",
     metaTitle: "SusProd — beats exclusivos",
     metaDescription:
       "Beats de trap, drill e boom bap prontos para gravar. Preview no navegador e entrega do arquivo sem tag por e-mail.",
@@ -115,9 +136,30 @@ export const dictionary = {
     cartEmpty: "Your cart is empty. Pick a beat to start.",
     cartRemove: "Remove",
     cartTotalLabel: "Total",
-    cartCheckout: "Checkout",
-    cartCheckoutSoon: "Checkout goes live soon.",
+    cartCheckout: "Place order",
     cartOpen: "Open cart",
+    checkoutTitle: "Place your order",
+    checkoutLead:
+      "Check the beats and leave your contact details. The producer replies by email to arrange payment and send the files.",
+    checkoutEmpty: "Your cart is empty. Pick a beat before placing an order.",
+    checkoutName: "Name",
+    checkoutEmail: "Email",
+    checkoutEmailHint: "This is where the producer replies.",
+    checkoutArtist: "Artist name",
+    checkoutInstagram: "Instagram",
+    checkoutNote: "Message (optional)",
+    checkoutSummary: "Your order",
+    checkoutSubmit: "Send order",
+    checkoutSending: "Sending...",
+    checkoutDisclaimer:
+      "This is a request, not a charge. Nothing is billed now: the producer confirms availability and arranges payment with you directly.",
+    confirmEyebrow: "Order received",
+    confirmTitle: "We got your order",
+    confirmLead:
+      "Keep this code — it is how the producer identifies your order when he replies.",
+    confirmPayment:
+      "You will hear back at the email you gave, with the payment details and the files. If nothing arrives, check your spam folder.",
+    confirmBack: "Back to the catalog",
     metaTitle: "SusProd — exclusive beats",
     metaDescription:
       "Trap, drill and boom bap beats ready to record on. Preview in the browser, untagged files delivered by email.",

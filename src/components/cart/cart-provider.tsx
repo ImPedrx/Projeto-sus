@@ -20,6 +20,7 @@ type CartState = {
   items: CartItem[];
   add: (item: CartItem) => void;
   remove: (id: number) => void;
+  clear: () => void;
   has: (id: number) => boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -47,14 +48,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     writeCart(removeFromCart(getCartSnapshot(), id));
   }, []);
 
+  // Emptied once the order is placed: what the buyer requested now lives in the
+  // order, and leaving the cart full invites a duplicate request.
+  const clear = useCallback(() => {
+    writeCart([]);
+    setOpen(false);
+  }, []);
+
   const has = useCallback(
     (id: number) => items.some((item) => item.id === id),
     [items],
   );
 
   const value = useMemo(
-    () => ({ items, add, remove, has, open, setOpen }),
-    [items, add, remove, has, open],
+    () => ({ items, add, remove, clear, has, open, setOpen }),
+    [items, add, remove, clear, has, open],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

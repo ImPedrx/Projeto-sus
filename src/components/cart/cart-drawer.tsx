@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/components/cart/cart-provider";
 import { formatPrice } from "@/lib/beats/format";
 import { cartTotal } from "@/lib/cart";
-import { copyFor, type Locale } from "@/lib/i18n";
+import { copyFor, pathFor, type Locale } from "@/lib/i18n";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
   const t = copyFor(locale);
@@ -77,16 +78,16 @@ export function CartDrawer({ locale }: { locale: Locale }) {
             <span className="text-muted">{t.cartTotalLabel}</span>
             <span>{formatPrice(cartTotal(items))}</span>
           </div>
-          <button
-            type="button"
-            disabled
-            className="mono mt-4 w-full bg-foreground px-4 py-3 text-xs text-background disabled:opacity-40"
+          <Link
+            href={pathFor(locale, "checkout")}
+            onClick={() => setOpen(false)}
+            aria-disabled={items.length === 0}
+            className={`mono mt-4 block w-full bg-foreground px-4 py-3 text-center text-xs text-background transition-opacity hover:opacity-80 ${
+              items.length === 0 ? "pointer-events-none opacity-40" : ""
+            }`}
           >
             {t.cartCheckout}
-          </button>
-          <p className="mono mt-2 text-center text-[10px] text-muted">
-            {t.cartCheckoutSoon}
-          </p>
+          </Link>
         </footer>
       </aside>
     </div>

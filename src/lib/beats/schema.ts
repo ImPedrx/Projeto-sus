@@ -38,7 +38,11 @@ export const beatInputSchema = z.object({
     .string()
     .trim()
     .max(600, "A descrição deve ter no máximo 600 caracteres.")
-    .nullable(),
+    // The column is nullable and the field was added after the first beats
+    // existed, so an input that omits it entirely is as valid as one that sends
+    // null. Both land as null.
+    .nullable()
+    .default(null),
   categoryIds: z
     .array(z.number().int().positive())
     .min(1, "Escolha ao menos uma categoria."),
