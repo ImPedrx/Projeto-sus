@@ -47,3 +47,6 @@ next-env.d.ts
 .vercel
 coverage/
 !.env.local.example
+
+# Cópia temporária das migrations para colar no dashboard
+APLICAR-NO-SUPABASE.sql
