@@ -4,22 +4,19 @@ import { notFound } from "next/navigation";
 import { copyFor, pathFor } from "@/lib/i18n";
 import { isOrderCode, normalizeOrderCode } from "@/lib/orders/code";
 
-const t = copyFor("pt");
+const t = copyFor("en");
 
 export const metadata: Metadata = {
-  title: `${t.confirmTitle} — SusProd`,
+  title: `${t.confirmTitle} — Sus`,
   robots: { index: false, follow: false },
 };
 
-export default async function OrderConfirmationPage({
+export default async function OrderConfirmationPageEn({
   params,
 }: {
   params: Promise<{ code: string }>;
 }) {
   const code = normalizeOrderCode((await params).code);
-  // The order itself is never read back: orders are unreadable to anon by
-  // design, so this page only proves the code is well formed and tells the
-  // buyer what happens next.
   if (!isOrderCode(code)) notFound();
 
   return (
@@ -33,7 +30,7 @@ export default async function OrderConfirmationPage({
       <p className="mt-4 leading-relaxed text-muted">{t.confirmPayment}</p>
 
       <Link
-        href={pathFor("pt", "catalog")}
+        href={pathFor("en", "catalog")}
         className="mono mt-10 inline-block border border-border px-4 py-2 text-xs transition-colors hover:border-foreground"
       >
         {t.confirmBack}

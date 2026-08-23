@@ -3,12 +3,12 @@ export type Locale = (typeof locales)[number];
 
 export type Page = "home" | "catalog" | "checkout";
 
-// Portuguese lives at the root and English under /en, so the Brazilian
-// audience keeps the clean URLs and search engines still get a real address
-// for each language.
+// English lives at the root and Portuguese under /pt: most buyers are abroad,
+// so they get the clean URLs, while the Brazilian audience keeps a real address
+// for each language and search engines get one per locale.
 const PATHS: Record<Locale, Record<Page, string>> = {
-  pt: { home: "/", catalog: "/projetos", checkout: "/checkout" },
-  en: { home: "/en", catalog: "/en/projects", checkout: "/en/checkout" },
+  en: { home: "/", catalog: "/projects", checkout: "/checkout" },
+  pt: { home: "/pt", catalog: "/pt/projetos", checkout: "/pt/checkout" },
 };
 
 export function pathFor(locale: Locale, page: Page): string {
@@ -16,12 +16,12 @@ export function pathFor(locale: Locale, page: Page): string {
 }
 
 export function localeFromPathname(pathname: string): Locale {
-  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "pt";
+  return pathname === "/pt" || pathname.startsWith("/pt/") ? "pt" : "en";
 }
 
 export const dictionary = {
   pt: {
-    heroEyebrow: "SusProd · produção musical",
+    heroEyebrow: "Sus · produção musical",
     heroTitleLine1: "Escolhe",
     heroTitleLine2: "o beat.",
     heroTitleLine3: "Grava hoje.",
@@ -42,7 +42,7 @@ export const dictionary = {
     filterAll: "Todos",
     navCatalog: "Projetos",
     navLogin: "Login",
-    footerTagline: "SusProd — beats e projetos exclusivos",
+    footerTagline: "Sus — beats e projetos exclusivos",
     cardNoCategory: "sem categoria",
     cardNoMeta: "sem metadados",
     cardPlay: "ouvir preview",
@@ -89,12 +89,12 @@ export const dictionary = {
     confirmPayment:
       "O contato chega no e-mail que você informou, com a forma de pagamento e o envio dos arquivos. Se não aparecer, confira a caixa de spam.",
     confirmBack: "Voltar ao catálogo",
-    metaTitle: "SusProd — beats exclusivos",
+    metaTitle: "Sus — beats exclusivos",
     metaDescription:
       "Beats de trap, drill e boom bap prontos para gravar. Preview no navegador e entrega do arquivo sem tag por e-mail.",
   },
   en: {
-    heroEyebrow: "SusProd · music production",
+    heroEyebrow: "Sus · music production",
     heroTitleLine1: "Pick",
     heroTitleLine2: "the beat.",
     heroTitleLine3: "Record today.",
@@ -115,7 +115,7 @@ export const dictionary = {
     filterAll: "All",
     navCatalog: "Projects",
     navLogin: "Login",
-    footerTagline: "SusProd — exclusive beats and custom projects",
+    footerTagline: "Sus — exclusive beats and custom projects",
     cardNoCategory: "no category",
     cardNoMeta: "no metadata",
     cardPlay: "play preview",
@@ -162,7 +162,7 @@ export const dictionary = {
     confirmPayment:
       "You will hear back at the email you gave, with the payment details and the files. If nothing arrives, check your spam folder.",
     confirmBack: "Back to the catalog",
-    metaTitle: "SusProd — exclusive beats",
+    metaTitle: "Sus — exclusive beats",
     metaDescription:
       "Trap, drill and boom bap beats ready to record on. Preview in the browser, untagged files delivered by email.",
   },

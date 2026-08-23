@@ -5,7 +5,7 @@ import { copyFor, pathFor } from "@/lib/i18n";
 const t = copyFor("en");
 
 export const metadata: Metadata = {
-  title: `${t.catalogTitle} — SusProd`,
+  title: `${t.catalogTitle} — Sus`,
   description: t.metaDescription,
   alternates: {
     canonical: pathFor("en", "catalog"),

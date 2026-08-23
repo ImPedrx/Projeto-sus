@@ -17,21 +17,23 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SusProd",
-  description: "Beats e projetos exclusivos por SusProd.",
+  title: "Sus",
+  description: "Exclusive beats and custom projects by Sus.",
 };
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // The admin area is Portuguese only; the storefront serves English under
-  // /en, and the document language has to follow it.
+  // The storefront serves English at the root and Portuguese under /pt, and the
+  // document language has to follow it. The admin area is Portuguese only, so it
+  // is pinned regardless of where the default locale sits.
   const pathname = (await headers()).get("x-pathname") ?? "/";
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin");
   const locale = localeFromPathname(pathname);
 
   return (
     <html
-      lang={locale === "en" ? "en" : "pt-BR"}
+      lang={isAdmin || locale === "pt" ? "pt-BR" : "en"}
       className={`${archivo.variable} ${archivoBlack.variable} ${dmMono.variable}`}
     >
       <body className="min-h-screen bg-background text-foreground antialiased">

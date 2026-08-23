@@ -19,26 +19,27 @@ describe("dictionary", () => {
 });
 
 describe("localeFromPathname", () => {
-  it("reads English off the path prefix", () => {
-    expect(localeFromPathname("/en")).toBe("en");
-    expect(localeFromPathname("/en/projects")).toBe("en");
+  it("reads Portuguese off the path prefix", () => {
+    expect(localeFromPathname("/pt")).toBe("pt");
+    expect(localeFromPathname("/pt/projetos")).toBe("pt");
   });
 
-  it("falls back to Portuguese", () => {
-    expect(localeFromPathname("/")).toBe("pt");
-    expect(localeFromPathname("/projetos")).toBe("pt");
-    expect(localeFromPathname("/enquete")).toBe("pt");
+  it("falls back to English", () => {
+    expect(localeFromPathname("/")).toBe("en");
+    expect(localeFromPathname("/projects")).toBe("en");
+    // A path that merely starts with the locale letters is not the locale.
+    expect(localeFromPathname("/ptbr")).toBe("en");
   });
 });
 
 describe("pathFor", () => {
-  it("keeps Portuguese at the root", () => {
-    expect(pathFor("pt", "home")).toBe("/");
-    expect(pathFor("pt", "catalog")).toBe("/projetos");
+  it("keeps English at the root", () => {
+    expect(pathFor("en", "home")).toBe("/");
+    expect(pathFor("en", "catalog")).toBe("/projects");
   });
 
-  it("prefixes English and translates the slug", () => {
-    expect(pathFor("en", "home")).toBe("/en");
-    expect(pathFor("en", "catalog")).toBe("/en/projects");
+  it("prefixes Portuguese and keeps its slug", () => {
+    expect(pathFor("pt", "home")).toBe("/pt");
+    expect(pathFor("pt", "catalog")).toBe("/pt/projetos");
   });
 });
