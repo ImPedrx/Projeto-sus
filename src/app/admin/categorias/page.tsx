@@ -1,10 +1,10 @@
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { createCategory, deleteCategory } from "./actions";
 import { CategoryForm } from "./category-form";
 import { DeleteCategoryButton } from "./delete-category-button";
 
 export default async function CategoriesPage() {
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
   const { data: categories } = await supabase
     .from("categories")
     .select("id, name, slug")

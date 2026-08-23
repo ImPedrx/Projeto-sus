@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { updateBeat } from "../actions";
 import { EditBeatForm } from "../edit-beat-form";
 
@@ -10,7 +10,7 @@ export default async function EditBeatPage({
 }) {
   const { id } = await params;
   const beatId = Number(id);
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
 
   const [{ data: beat }, { data: categories }] = await Promise.all([
     supabase

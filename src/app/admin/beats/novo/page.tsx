@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { createBeat } from "../actions";
 import { BeatForm } from "../beat-form";
 
 export default async function NewBeatPage() {
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
   const { data: categories } = await supabase
     .from("categories")
     .select("id, name")

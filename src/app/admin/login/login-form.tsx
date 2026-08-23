@@ -22,7 +22,7 @@ export function LoginForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
+    <form method="post" onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
       <div className="space-y-2">
         <label htmlFor="email" className="block text-sm text-muted">
           E-mail

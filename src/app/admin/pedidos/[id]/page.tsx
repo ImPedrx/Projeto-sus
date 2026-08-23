@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { getOrder } from "@/lib/orders/queries";
 import { formatPrice } from "@/lib/beats/format";
 import { STATUS_LABEL } from "../page";
@@ -15,7 +15,7 @@ export default async function AdminOrderPage({
   const id = Number((await params).id);
   if (!Number.isInteger(id) || id <= 0) notFound();
 
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
   const order = await getOrder(supabase, id);
   if (!order) notFound();
 

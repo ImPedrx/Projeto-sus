@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { assertAdmin } from "@/lib/auth/require-admin";
 import { categoryInputSchema } from "@/lib/beats/schema";
 import { slugify } from "@/lib/beats/slug";
 
@@ -11,7 +11,7 @@ export async function createCategory(formData: FormData) {
     return { error: parsed.error.issues[0].message };
   }
 
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
   const { error } = await supabase.from("categories").insert({
     name: parsed.data.name,
     slug: slugify(parsed.data.name),
@@ -32,7 +32,7 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function deleteCategory(id: number) {
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
   const { error } = await supabase.from("categories").delete().eq("id", id);
 
   if (error) {

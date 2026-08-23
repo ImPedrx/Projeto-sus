@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { assertAdmin } from "@/lib/auth/require-admin";
 import { beatInputSchema } from "@/lib/beats/schema";
 import { slugify } from "@/lib/beats/slug";
 import { bucketFor, storagePathFor, type AssetKind } from "@/lib/beats/storage";
@@ -36,7 +36,7 @@ export async function createBeat(formData: FormData) {
   if (!preview?.size) return { error: "Envie o preview com a tag de voz." };
   if (!masterMp3?.size) return { error: "Envie o MP3 sem tag." };
 
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
   const slug = slugify(parsed.data.title);
 
   const uploads: Array<[AssetKind, File]> = [
@@ -104,7 +104,7 @@ export async function createBeat(formData: FormData) {
 }
 
 export async function setBeatStatus(id: number, status: BeatStatus) {
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
   const { error } = await supabase.from("beats").update({ status }).eq("id", id);
   if (error) return { error: "Não foi possível alterar o status." };
 
@@ -126,7 +126,7 @@ export async function updateBeat(id: number, formData: FormData) {
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
   const { error: updateError } = await supabase
     .from("beats")
     .update({
@@ -160,7 +160,7 @@ export async function updateBeat(id: number, formData: FormData) {
 }
 
 export async function deleteBeat(id: number) {
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
 
   const { data: beat } = await supabase
     .from("beats")

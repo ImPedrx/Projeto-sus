@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { assertAdmin } from "@/lib/auth/require-admin";
 import type { OrderStatus } from "@/lib/supabase/types";
 
 export type ActionResult = { ok: true } | { error: string };
@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
 };
 
 async function moveTo(id: number, next: OrderStatus): Promise<ActionResult> {
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
 
   const { data: current, error: readError } = await supabase
     .from("orders")
@@ -72,7 +72,7 @@ const DELIVERY_TTL_SECONDS = 7 * 24 * 60 * 60;
 // expires, not a file made public. Refused before approval, so a link cannot
 // exist for an order the producer has not agreed to.
 export async function signDelivery(id: number): Promise<DeliveryResult> {
-  const supabase = await createServerClient();
+  const supabase = await assertAdmin();
 
   const { data: order, error: orderError } = await supabase
     .from("orders")

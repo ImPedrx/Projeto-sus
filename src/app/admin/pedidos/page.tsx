@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { listOrders } from "@/lib/orders/queries";
 import { formatPrice } from "@/lib/beats/format";
 import type { OrderStatus } from "@/lib/supabase/types";
@@ -40,7 +40,7 @@ export default async function AdminOrdersPage({
   // Pending leads by default: those are the ones waiting on the producer.
   const filter = isStatus(requested) ? requested : requested === "todos" ? undefined : "pending";
 
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
   const orders = await listOrders(supabase, filter);
 
   return (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createServerClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { listBeatsForAdmin } from "@/lib/beats/queries";
 import { formatPrice } from "@/lib/beats/format";
 import { setBeatStatus, deleteBeat } from "./beats/actions";
@@ -12,7 +12,7 @@ const STATUS_LABEL = {
 } as const;
 
 export default async function AdminHomePage() {
-  const supabase = await createServerClient();
+  const supabase = await requireAdmin();
   const beats = await listBeatsForAdmin(supabase);
 
   return (
