@@ -32,6 +32,7 @@ export default async function AdminLayout({
     <div className="min-h-screen">
       <header className="flex items-center justify-between border-b border-border px-6 py-4">
         <nav className="flex gap-6 text-sm">
+          <Link href="/admin/metricas">Visão geral</Link>
           <Link href="/admin">Beats</Link>
           <Link href="/admin/categorias">Categorias</Link>
           <Link href="/admin/pedidos" className="flex items-center gap-2">
