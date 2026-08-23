@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { publicAssetUrl } from "@/lib/beats/storage";
 import { updateBeat } from "../actions";
 import { EditBeatForm } from "../edit-beat-form";
 
@@ -16,7 +17,7 @@ export default async function EditBeatPage({
     supabase
       .from("beats")
       .select(
-        "id, title, price_cents, bpm, musical_key, description, beat_categories(category_id)",
+        "id, title, price_cents, bpm, musical_key, description, cover_path, beat_categories(category_id)",
       )
       .eq("id", beatId)
       .single(),
@@ -37,6 +38,10 @@ export default async function EditBeatPage({
           musicalKey: beat.musical_key,
           description: beat.description,
           categoryIds: (beat.beat_categories ?? []).map((link) => link.category_id),
+          coverUrl: publicAssetUrl(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            beat.cover_path,
+          ),
         }}
         action={updateBeat.bind(null, beatId)}
       />

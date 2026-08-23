@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CategoryField } from "./category-field";
+import { CoverField } from "./cover-field";
 
 type Category = { id: number; name: string };
 type Result = { error: string } | { ok: true; id: number };
@@ -28,9 +30,12 @@ export function BeatForm({
   }
 
   const field = "w-full rounded border border-border bg-surface px-3 py-2";
+  const fileInput =
+    "text-sm text-muted file:mr-3 file:rounded file:border file:border-border file:bg-surface file:px-3 file:py-1.5 file:text-sm file:text-foreground hover:file:border-foreground";
 
   return (
-    <form onSubmit={onSubmit} className="max-w-xl space-y-5">
+    <form onSubmit={onSubmit} className="max-w-xl space-y-8">
+      <div className="space-y-5">
       <div className="space-y-2">
         <label htmlFor="title" className="block text-sm text-muted">
           Título
@@ -81,41 +86,32 @@ export function BeatForm({
           className={`${field} resize-y`}
         />
       </div>
+      </div>
 
-      <fieldset className="space-y-2">
-        <legend className="text-sm text-muted">Categorias</legend>
-        {categories.map((category) => (
-          <label key={category.id} className="flex items-center gap-2">
-            <input type="checkbox" name="categoryIds" value={category.id} />
-            {category.name}
+      <CategoryField categories={categories} />
+
+      <div className="space-y-5 border-t border-border pt-6">
+        <div className="space-y-2">
+          <label htmlFor="preview" className="block text-sm text-muted">
+            Preview com tag (MP3)
           </label>
-        ))}
-      </fieldset>
+          <input id="preview" name="preview" type="file" accept="audio/mpeg" required className={fileInput} />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="masterMp3" className="block text-sm text-muted">
+            MP3 sem tag
+          </label>
+          <input id="masterMp3" name="masterMp3" type="file" accept="audio/mpeg" required className={fileInput} />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="masterWav" className="block text-sm text-muted">
+            WAV sem tag (opcional)
+          </label>
+          <input id="masterWav" name="masterWav" type="file" accept="audio/wav" className={fileInput} />
+        </div>
+      </div>
 
-      <div className="space-y-2">
-        <label htmlFor="preview" className="block text-sm text-muted">
-          Preview com tag (MP3)
-        </label>
-        <input id="preview" name="preview" type="file" accept="audio/mpeg" required />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="masterMp3" className="block text-sm text-muted">
-          MP3 sem tag
-        </label>
-        <input id="masterMp3" name="masterMp3" type="file" accept="audio/mpeg" required />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="masterWav" className="block text-sm text-muted">
-          WAV sem tag (opcional)
-        </label>
-        <input id="masterWav" name="masterWav" type="file" accept="audio/wav" />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="cover" className="block text-sm text-muted">
-          Capa (opcional)
-        </label>
-        <input id="cover" name="cover" type="file" accept="image/*" />
-      </div>
+      <CoverField />
 
       {error && (
         <p role="alert" className="text-sm">

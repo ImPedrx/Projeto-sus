@@ -140,6 +140,25 @@ export async function updateBeat(id: number, formData: FormData) {
 
   if (updateError) return { error: "Não foi possível salvar as alterações." };
 
+  // A new cover is optional on edit. Reuse the beat's stored slug for the path
+  // so the file name stays stable even when the title changed, and upsert so a
+  // replacement overwrites the old art in place.
+  const cover = formData.get("cover") as File | null;
+  if (cover?.size) {
+    const { data: existing } = await supabase
+      .from("beats")
+      .select("slug")
+      .eq("id", id)
+      .single();
+    const coverSlug = existing?.slug ?? slugify(parsed.data.title);
+    const coverPath = storagePathFor("cover", coverSlug, cover.name);
+    const { error: coverError } = await supabase.storage
+      .from("beat-public")
+      .upload(coverPath, cover, { upsert: true, contentType: cover.type });
+    if (coverError) return { error: "Falha ao enviar a capa." };
+    await supabase.from("beats").update({ cover_path: coverPath }).eq("id", id);
+  }
+
   // Replace the category links wholesale — the set is tiny, and diffing buys
   // nothing here.
   await supabase.from("beat_categories").delete().eq("beat_id", id);
