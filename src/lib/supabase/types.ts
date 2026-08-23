@@ -175,7 +175,7 @@ export type Database = {
       // total is computed inside the function, which is why no amount appears
       // in the argument type.
       place_order: {
-        Args: { payload: Json };
+        Args: { payload: Json; client_ip: string | null };
         Returns: string;
       };
     };

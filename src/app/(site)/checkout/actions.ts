@@ -14,7 +14,18 @@ const REASONS: Record<string, string> = {
   P0001: "Seu carrinho está vazio ou tem beats demais.",
   P0002: "Um dos beats saiu do catálogo. Recarregue a página e tente de novo.",
   P0003: "Muitos pedidos seguidos com esse e-mail. Espere um pouco e tente de novo.",
+  P0004: "Muitos pedidos vindos daqui agora há pouco. Espere um pouco e tente de novo.",
 };
+
+// The first hop in x-forwarded-for is the client as Vercel's proxy saw it; the
+// rest are proxies. It is a hint, not proof of identity — spoofable by design —
+// which is exactly why it only feeds a rate limit and never an auth decision.
+async function clientIp(): Promise<string | null> {
+  const h = await headers();
+  const forwarded = h.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]!.trim() || null;
+  return h.get("x-real-ip");
+}
 
 export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
   const parsed = orderInputSchema.safeParse(input);
@@ -25,6 +36,7 @@ export async function placeOrder(input: unknown): Promise<PlaceOrderResult> {
   const supabase = await createServerClient();
   const { data: code, error } = await supabase.rpc("place_order", {
     payload: parsed.data,
+    client_ip: await clientIp(),
   });
 
   if (error || !code) {
