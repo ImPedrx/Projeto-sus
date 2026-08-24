@@ -3,7 +3,9 @@ import { beatInputSchema } from "@/lib/beats/schema";
 
 const valid = {
   title: "Dark Night",
-  priceCents: 19900,
+  priceCents: 6000,
+  priceWavCents: 12000,
+  priceExclusiveCents: null,
   bpm: 140,
   musicalKey: "F#m",
   categoryIds: [1],
@@ -23,8 +25,22 @@ describe("beatInputSchema", () => {
     expect(beatInputSchema.safeParse({ ...valid, priceCents: -1 }).success).toBe(false);
   });
 
+  it("reads an empty licence price as the site default rather than an error", () => {
+    const result = beatInputSchema.safeParse({ ...valid, priceCents: null, priceWavCents: null });
+    expect(result.success).toBe(true);
+  });
+
+  it("requires a price on a service, which has no default to fall back to", () => {
+    expect(
+      beatInputSchema.safeParse({ ...valid, kind: "service", priceCents: null }).success,
+    ).toBe(false);
+    expect(
+      beatInputSchema.safeParse({ ...valid, kind: "service", priceCents: 15000 }).success,
+    ).toBe(true);
+  });
+
   it("rejects a fractional price", () => {
-    expect(beatInputSchema.safeParse({ ...valid, priceCents: 199.5 }).success).toBe(false);
+    expect(beatInputSchema.safeParse({ ...valid, priceCents: 59.5 }).success).toBe(false);
   });
 
   it("rejects an implausible bpm", () => {
@@ -34,7 +50,9 @@ describe("beatInputSchema", () => {
   it("allows bpm and key to be omitted", () => {
     const result = beatInputSchema.safeParse({
       title: "Sem Info",
-      priceCents: 9900,
+      priceCents: null,
+      priceWavCents: null,
+      priceExclusiveCents: null,
       bpm: null,
       musicalKey: null,
       categoryIds: [2],
@@ -61,8 +79,8 @@ describe("beatInputSchema mensagens", () => {
   });
 
   it("explains a price that is not a number", () => {
-    expect(firstError({ ...valid, priceCents: Number("dez reais") })).toBe(
-      "Informe o preço em números, por exemplo 199,00.",
+    expect(firstError({ ...valid, priceCents: Number("dez dolares") })).toBe(
+      "Informe o preço MP3 em números, por exemplo 60.00.",
     );
   });
 

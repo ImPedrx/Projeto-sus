@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
     // It has to sit above the largest upload, not above the largest file.
     proxyClientMaxBodySize: "120mb",
   },
+  // The catalogue used to live at /projects; the links are already out in the
+  // world, so the old addresses keep working and point at the new ones.
+  async redirects() {
+    return [
+      { source: "/projects", destination: "/tracks", permanent: true },
+      { source: "/pt/projetos", destination: "/pt/faixas", permanent: true },
+    ];
+  },
   images: {
     // Cover art is served from the project's public storage bucket.
     remotePatterns: supabaseHost

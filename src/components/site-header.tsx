@@ -33,6 +33,12 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               {t.navCatalog}
             </Link>
             <Link
+              href={pathFor(locale, "services")}
+              className="mono border border-border px-4 py-2 text-xs transition-colors hover:border-foreground"
+            >
+              {t.navServices}
+            </Link>
+            <Link
               href="/admin/login"
               className="mono bg-foreground px-4 py-2 text-xs text-background transition-opacity hover:opacity-80"
             >

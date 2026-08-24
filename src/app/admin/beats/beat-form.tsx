@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CategoryField } from "./category-field";
 import { CoverField } from "./cover-field";
+import { KindField, PriceFields } from "./price-fields";
 
 type Category = { id: number; name: string };
 type Result = { error: string } | { ok: true; id: number };
@@ -18,6 +19,9 @@ export function BeatForm({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // A service has no audio and one price, so the type decides which half of the
+  // form exists at all rather than merely how it is labelled.
+  const [kind, setKind] = useState<"beat" | "service">("beat");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,6 +40,8 @@ export function BeatForm({
   return (
     <form onSubmit={onSubmit} className="max-w-xl space-y-8">
       <div className="space-y-5">
+      <KindField value={kind} onChange={setKind} />
+
       <div className="space-y-2">
         <label htmlFor="title" className="block text-sm text-muted">
           Título
@@ -43,13 +49,10 @@ export function BeatForm({
         <input id="title" name="title" required className={field} />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <label htmlFor="price" className="block text-sm text-muted">
-            Preço (R$)
-          </label>
-          <input id="price" name="price" inputMode="decimal" required className={field} />
-        </div>
+      <PriceFields kind={kind} />
+
+      {kind === "beat" && (
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <label htmlFor="bpm" className="block text-sm text-muted">
             BPM
@@ -72,6 +75,7 @@ export function BeatForm({
           <input id="musicalKey" name="musicalKey" className={field} />
         </div>
       </div>
+      )}
 
       <div className="space-y-2">
         <label htmlFor="description" className="block text-sm text-muted">
@@ -90,6 +94,7 @@ export function BeatForm({
 
       <CategoryField categories={categories} />
 
+      {kind === "beat" && (
       <div className="space-y-5 border-t border-border pt-6">
         <div className="space-y-2">
           <label htmlFor="preview" className="block text-sm text-muted">
@@ -110,6 +115,7 @@ export function BeatForm({
           <input id="masterWav" name="masterWav" type="file" accept="audio/wav" className={fileInput} />
         </div>
       </div>
+      )}
 
       <CoverField />
 
@@ -124,7 +130,7 @@ export function BeatForm({
         disabled={pending}
         className="rounded bg-foreground px-4 py-2 font-medium text-background disabled:opacity-50"
       >
-        {pending ? "Enviando..." : "Salvar beat"}
+        {pending ? "Enviando..." : kind === "beat" ? "Salvar beat" : "Salvar serviço"}
       </button>
     </form>
   );

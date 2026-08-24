@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, OrderStatus } from "@/lib/supabase/types";
+import type { Database, OrderItemLicense, OrderStatus } from "@/lib/supabase/types";
 
 export type OrderRow = {
   id: number;
@@ -16,7 +16,12 @@ export type OrderDetail = OrderRow & {
   artistName: string | null;
   instagram: string | null;
   note: string | null;
-  items: Array<{ beatId: number; title: string; priceCents: number }>;
+  items: Array<{
+    beatId: number;
+    license: OrderItemLicense;
+    title: string;
+    priceCents: number | null;
+  }>;
 };
 
 type RawListRow = {
@@ -77,7 +82,12 @@ type RawDetail = Omit<RawListRow, "order_items"> & {
   artist_name: string | null;
   instagram: string | null;
   note: string | null;
-  order_items: Array<{ beat_id: number; title: string; price_cents: number }> | null;
+  order_items: Array<{
+    beat_id: number;
+    license: OrderItemLicense;
+    title: string;
+    price_cents: number | null;
+  }> | null;
 };
 
 export async function getOrder(
@@ -87,7 +97,7 @@ export async function getOrder(
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, code, customer_name, customer_email, artist_name, instagram, note, total_cents, status, created_at, order_items(beat_id, title, price_cents)",
+      "id, code, customer_name, customer_email, artist_name, instagram, note, total_cents, status, created_at, order_items(beat_id, license, title, price_cents)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -98,6 +108,7 @@ export async function getOrder(
   const row = data as unknown as RawDetail;
   const items = (row.order_items ?? []).map((item) => ({
     beatId: item.beat_id,
+    license: item.license,
     title: item.title,
     priceCents: item.price_cents,
   }));

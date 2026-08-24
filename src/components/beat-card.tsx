@@ -1,6 +1,7 @@
 "use client";
 
-import { formatPrice, formatDuration } from "@/lib/beats/format";
+import { formatPrice, formatDuration, formatPostedDate } from "@/lib/beats/format";
+import { licensePriceCents } from "@/lib/beats/licenses";
 import { waveformFor } from "@/lib/beats/waveform";
 import { useState } from "react";
 import { usePreviewPlayer } from "@/components/preview-player";
@@ -26,7 +27,11 @@ export function BeatCard({
     beat.bpm ? `${beat.bpm} BPM` : null,
     beat.musicalKey,
     beat.durationSeconds ? formatDuration(beat.durationSeconds) : null,
+    t.postedOn(formatPostedDate(beat.createdAt, locale)),
   ].filter(Boolean);
+
+  // The card quotes the cheapest licence; the dialog behind it prices all three.
+  const cheapest = licensePriceCents(beat, "mp3");
 
   return (
     <article className="group flex flex-col border border-border bg-surface transition-colors hover:border-muted">
@@ -90,7 +95,9 @@ export function BeatCard({
           >
             {beat.title}
           </button>
-          <span className="mono shrink-0 text-sm">{formatPrice(beat.priceCents)}</span>
+          <span className="mono shrink-0 text-sm">
+            {cheapest === null ? t.licenseInquire : t.priceFrom(formatPrice(cheapest))}
+          </span>
         </div>
 
         <div className="flex items-center gap-3">

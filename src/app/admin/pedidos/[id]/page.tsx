@@ -73,14 +73,27 @@ export default async function AdminOrderPage({
       )}
 
       <section className="space-y-2">
-        <h2 className="text-sm font-medium">Beats</h2>
-        {/* Titles and prices as they were when the order was placed, not as the
-            catalog reads today. */}
+        <h2 className="text-sm font-medium">Itens</h2>
+        {/* Titles, licences and prices as they were when the order was placed,
+            not as the catalog reads today. */}
         <ul className="divide-y divide-border border-y border-border text-sm">
           {order.items.map((item) => (
-            <li key={item.beatId} className="flex items-baseline justify-between gap-4 py-3">
-              <span>{item.title}</span>
-              <span className="text-muted">{formatPrice(item.priceCents)}</span>
+            <li
+              key={`${item.beatId}:${item.license}`}
+              className="flex items-baseline justify-between gap-4 py-3"
+            >
+              <span>
+                {item.title}
+                <span className="text-muted">
+                  {" "}
+                  · {item.license === "service" ? "serviço" : item.license.toUpperCase()}
+                </span>
+              </span>
+              {/* An exclusive licence with no published price is quoted by hand
+                  after the order arrives. */}
+              <span className="text-muted">
+                {item.priceCents === null ? "sob consulta" : formatPrice(item.priceCents)}
+              </span>
             </li>
           ))}
         </ul>

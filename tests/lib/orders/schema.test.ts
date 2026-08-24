@@ -4,7 +4,10 @@ import { orderInputSchema } from "@/lib/orders/schema";
 const valid = {
   customerName: "  João Paulo ",
   customerEmail: "  Joao@Example.COM ",
-  beatIds: [1, 2],
+  items: [
+    { beatId: 1, license: "mp3" },
+    { beatId: 1, license: "wav" },
+  ],
 };
 
 describe("orderInputSchema", () => {
@@ -32,10 +35,21 @@ describe("orderInputSchema", () => {
   });
 
   it("refuses an empty cart and an oversized one", () => {
-    expect(orderInputSchema.safeParse({ ...valid, beatIds: [] }).success).toBe(false);
+    expect(orderInputSchema.safeParse({ ...valid, items: [] }).success).toBe(false);
     expect(
-      orderInputSchema.safeParse({ ...valid, beatIds: Array.from({ length: 21 }, (_, i) => i + 1) })
-        .success,
+      orderInputSchema.safeParse({
+        ...valid,
+        items: Array.from({ length: 21 }, (_, i) => ({ beatId: i + 1, license: "mp3" })),
+      }).success,
+    ).toBe(false);
+  });
+
+  it("refuses a licence that does not exist", () => {
+    expect(
+      orderInputSchema.safeParse({
+        ...valid,
+        items: [{ beatId: 1, license: "gold" }],
+      }).success,
     ).toBe(false);
   });
 

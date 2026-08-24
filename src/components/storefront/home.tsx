@@ -53,15 +53,9 @@ export async function Home({ locale }: { locale: Locale }) {
             {t.heroTitleLine3}
           </h1>
 
-          <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <p className="max-w-md text-muted">{t.heroLead}</p>
-            <Link
-              href={pathFor(locale, "catalog")}
-              className="mono w-fit bg-foreground px-6 py-3 text-xs text-background transition-opacity hover:opacity-80"
-            >
-              {t.heroCta}
-            </Link>
-          </div>
+          {/* No call to action here: the catalogue is one click away in the
+              header, and the beats below are the real entry point. */}
+          <p className="mt-10 max-w-md text-muted">{t.heroLead}</p>
         </div>
       </section>
 
@@ -76,9 +70,11 @@ export async function Home({ locale }: { locale: Locale }) {
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="display text-2xl">{t.latestTitle}</h2>
+          {/* The hero lost its button, so this is now the page's one call to
+              action and is styled as one rather than as a quiet link. */}
           <Link
             href={pathFor(locale, "catalog")}
-            className="mono text-xs text-muted hover:text-foreground"
+            className="mono shrink-0 bg-foreground px-5 py-2.5 text-xs text-background transition-opacity hover:opacity-80"
           >
             {t.seeAll}
           </Link>

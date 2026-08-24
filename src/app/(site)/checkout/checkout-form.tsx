@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/cart-provider";
 import { formatPrice } from "@/lib/beats/format";
+import { cartHasUnpricedItem, cartItemKey, cartTotal } from "@/lib/cart";
 import { copyFor, pathFor, type Locale } from "@/lib/i18n";
 import { placeOrder } from "@/app/(site)/checkout/actions";
 
@@ -15,7 +16,7 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const total = items.reduce((sum, item) => sum + item.priceCents, 0);
+  const total = cartTotal(items);
 
   function onSubmit(formData: FormData) {
     setError(null);
@@ -34,7 +35,7 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
         artistName: String(formData.get("artistName") ?? ""),
         instagram: String(formData.get("instagram") ?? ""),
         note: String(formData.get("note") ?? ""),
-        beatIds: items.map((item) => item.id),
+        items: items.map((item) => ({ beatId: item.beatId, license: item.license })),
       });
 
       if ("error" in result) {
@@ -122,10 +123,21 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
         </h2>
         <ul className="divide-y divide-border">
           {items.map((item) => (
-            <li key={item.id} className="flex items-baseline justify-between gap-4 px-5 py-3">
-              <span className="truncate text-sm">{item.title}</span>
+            <li key={cartItemKey(item)} className="flex items-baseline justify-between gap-4 px-5 py-3">
+              {/* The licence sits outside the truncating span: inside it, a
+                  long title ate the licence and left "EXCL…" on screen. */}
+              <span className="flex min-w-0 items-baseline gap-1.5 text-sm">
+                <span className="truncate">{item.title}</span>
+                {item.license !== "service" && (
+                  <span className="mono shrink-0 text-[11px] text-muted uppercase">
+                    · {item.license}
+                  </span>
+                )}
+              </span>
               <span className="mono shrink-0 text-[11px] text-muted">
-                {formatPrice(item.priceCents)}
+                {item.priceCents === null
+                  ? t.licenseInquire
+                  : formatPrice(item.priceCents)}
               </span>
             </li>
           ))}
@@ -134,6 +146,11 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
           <span className="text-muted">{t.cartTotalLabel}</span>
           <span>{formatPrice(total)}</span>
         </div>
+        {cartHasUnpricedItem(items) && (
+          <p className="mono border-t border-border px-5 py-3 text-[11px] text-muted">
+            {t.cartQuoteNote}
+          </p>
+        )}
       </aside>
     </div>
   );

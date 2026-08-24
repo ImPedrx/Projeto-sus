@@ -12,37 +12,48 @@ function parseOptionalInt(value: FormDataEntryValue | null): number | null {
   return text === "" ? null : Number(text);
 }
 
-export async function createBeat(formData: FormData) {
-  // The form collects reais with a comma decimal separator; the database
-  // stores integer cents.
-  const priceText = String(formData.get("price") ?? "").replace(",", ".");
+// An empty price field is a decision, not an omission: it means "use the site
+// default" for MP3 and WAV, and "quote it by hand" for the exclusive licence.
+function parseOptionalPriceCents(value: FormDataEntryValue | null): number | null {
+  const text = String(value ?? "").trim().replace(",", ".");
+  return text === "" ? null : Math.round(Number(text) * 100);
+}
 
-  const parsed = beatInputSchema.safeParse({
+function beatInputFrom(formData: FormData) {
+  return beatInputSchema.safeParse({
+    kind: String(formData.get("kind") ?? "beat"),
     title: formData.get("title"),
-    priceCents: Math.round(Number(priceText) * 100),
+    priceCents: parseOptionalPriceCents(formData.get("price")),
+    priceWavCents: parseOptionalPriceCents(formData.get("priceWav")),
+    priceExclusiveCents: parseOptionalPriceCents(formData.get("priceExclusive")),
     bpm: parseOptionalInt(formData.get("bpm")),
     musicalKey: String(formData.get("musicalKey") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
     categoryIds: formData.getAll("categoryIds").map((value) => Number(value)),
   });
+}
+
+export async function createBeat(formData: FormData) {
+  const parsed = beatInputFrom(formData);
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
+  const isService = parsed.data.kind === "service";
   const preview = formData.get("preview") as File | null;
   const masterMp3 = formData.get("masterMp3") as File | null;
   const masterWav = formData.get("masterWav") as File | null;
   const cover = formData.get("cover") as File | null;
 
-  if (!preview?.size) return { error: "Envie o preview com a tag de voz." };
-  if (!masterMp3?.size) return { error: "Envie o MP3 sem tag." };
+  // A service has nothing to preview and no master to deliver.
+  if (!isService && !preview?.size) return { error: "Envie o preview com a tag de voz." };
+  if (!isService && !masterMp3?.size) return { error: "Envie o MP3 sem tag." };
 
   const supabase = await assertAdmin();
   const slug = slugify(parsed.data.title);
 
-  const uploads: Array<[AssetKind, File]> = [
-    ["preview", preview],
-    ["mp3", masterMp3],
-  ];
+  const uploads: Array<[AssetKind, File]> = [];
+  if (preview?.size) uploads.push(["preview", preview]);
+  if (masterMp3?.size) uploads.push(["mp3", masterMp3]);
   if (masterWav?.size) uploads.push(["wav", masterWav]);
   if (cover?.size) uploads.push(["cover", cover]);
 
@@ -63,12 +74,15 @@ export async function createBeat(formData: FormData) {
     .insert({
       title: parsed.data.title,
       slug,
+      kind: parsed.data.kind,
       price_cents: parsed.data.priceCents,
+      price_wav_cents: parsed.data.priceWavCents,
+      price_exclusive_cents: parsed.data.priceExclusiveCents,
       bpm: parsed.data.bpm,
       musical_key: parsed.data.musicalKey,
       description: parsed.data.description,
-      preview_path: paths.preview!,
-      master_mp3_path: paths.mp3!,
+      preview_path: paths.preview ?? null,
+      master_mp3_path: paths.mp3 ?? null,
       master_wav_path: paths.wav ?? null,
       cover_path: paths.cover ?? null,
       status: "draft",
@@ -113,16 +127,7 @@ export async function setBeatStatus(id: number, status: BeatStatus) {
 }
 
 export async function updateBeat(id: number, formData: FormData) {
-  const priceText = String(formData.get("price") ?? "").replace(",", ".");
-
-  const parsed = beatInputSchema.safeParse({
-    title: formData.get("title"),
-    priceCents: Math.round(Number(priceText) * 100),
-    bpm: parseOptionalInt(formData.get("bpm")),
-    musicalKey: String(formData.get("musicalKey") ?? "").trim() || null,
-    description: String(formData.get("description") ?? "").trim() || null,
-    categoryIds: formData.getAll("categoryIds").map((value) => Number(value)),
-  });
+  const parsed = beatInputFrom(formData);
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
@@ -131,7 +136,10 @@ export async function updateBeat(id: number, formData: FormData) {
     .from("beats")
     .update({
       title: parsed.data.title,
+      kind: parsed.data.kind,
       price_cents: parsed.data.priceCents,
+      price_wav_cents: parsed.data.priceWavCents,
+      price_exclusive_cents: parsed.data.priceExclusiveCents,
       bpm: parsed.data.bpm,
       musical_key: parsed.data.musicalKey,
       description: parsed.data.description,

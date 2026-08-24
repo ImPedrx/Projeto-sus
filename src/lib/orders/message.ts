@@ -1,4 +1,5 @@
 import { formatPrice } from "@/lib/beats/format";
+import type { LineLicense } from "@/lib/beats/licenses";
 
 export type OrderMessageInput = {
   code: string;
@@ -7,7 +8,7 @@ export type OrderMessageInput = {
   artistName?: string;
   instagram?: string;
   note?: string;
-  items: Array<{ title: string; priceCents: number }>;
+  items: Array<{ title: string; license: LineLicense; priceCents: number | null }>;
   totalCents: number;
   panelUrl?: string;
 };
@@ -25,12 +26,21 @@ export function buildOrderMessage(order: OrderMessageInput): string {
   if (order.artistName) lines.push(`Nome artístico: ${order.artistName}`);
   if (order.instagram) lines.push(`Instagram: @${order.instagram}`);
 
-  lines.push("", "Beats:");
+  lines.push("", "Itens:");
   for (const item of order.items) {
-    lines.push(`  · ${item.title} — ${formatPrice(item.priceCents)}`);
+    // An unpriced line is an exclusive licence with no published value: the
+    // producer quotes it when he replies, so it says so instead of a number.
+    const price =
+      item.priceCents === null ? "sob consulta" : formatPrice(item.priceCents);
+    const label = item.license === "service" ? "serviço" : item.license.toUpperCase();
+    lines.push(`  · ${item.title} [${label}] — ${price}`);
   }
 
   lines.push("", `Total: ${formatPrice(order.totalCents)}`);
+
+  if (order.items.some((item) => item.priceCents === null)) {
+    lines.push("(itens sob consulta não entram no total)");
+  }
 
   if (order.note) {
     lines.push("", "Recado do cliente:", order.note);

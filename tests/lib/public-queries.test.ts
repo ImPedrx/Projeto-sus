@@ -6,7 +6,11 @@ describe("toStoreBeat", () => {
     id: 1,
     title: "Dark Night",
     slug: "dark-night",
-    price_cents: 19900,
+    kind: "beat",
+    price_cents: 6000,
+    price_wav_cents: null,
+    price_exclusive_cents: 40000,
+    created_at: "2026-08-01T12:00:00Z",
     bpm: 140,
     musical_key: "F#m",
     duration_seconds: 125,
@@ -27,7 +31,11 @@ describe("toStoreBeat", () => {
       id: 1,
       title: "Dark Night",
       slug: "dark-night",
-      priceCents: 19900,
+      kind: "beat",
+      priceCents: 6000,
+      priceWavCents: null,
+      priceExclusiveCents: 40000,
+      createdAt: "2026-08-01T12:00:00Z",
       bpm: 140,
       musicalKey: "F#m",
       durationSeconds: 125,
@@ -43,5 +51,15 @@ describe("toStoreBeat", () => {
 
   it("leaves the cover null when the beat has none", () => {
     expect(toStoreBeat({ ...row, cover_path: null }, "https://proj.supabase.co").coverUrl).toBeNull();
+  });
+
+  it("carries a service through with no preview of its own", () => {
+    const service = toStoreBeat(
+      { ...row, kind: "service", preview_path: null, master_wav_path: null },
+      "https://proj.supabase.co",
+    );
+    expect(service.kind).toBe("service");
+    expect(service.previewUrl).toBeNull();
+    expect(service.hasWav).toBe(false);
   });
 });

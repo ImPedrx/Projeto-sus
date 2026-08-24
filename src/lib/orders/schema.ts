@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LICENSES } from "@/lib/beats/licenses";
 
 // Only the two fields the producer needs in order to reply are required. The
 // artist name and Instagram are context he likes to have when he answers, not
@@ -35,10 +36,18 @@ export const orderInputSchema = z.object({
     .max(1000, "O recado deve ter no máximo 1000 caracteres.")
     .optional()
     .transform((value) => value || undefined),
-  beatIds: z
-    .array(z.number().int().positive())
+  // A line is a beat plus the licence bought for it, so the same beat can
+  // appear twice under two licences. The price is never sent: place_order()
+  // reads it from the catalogue.
+  items: z
+    .array(
+      z.object({
+        beatId: z.number().int().positive(),
+        license: z.enum([...LICENSES, "service"]),
+      }),
+    )
     .min(1, "Seu carrinho está vazio.")
-    .max(20, "São no máximo 20 beats por pedido."),
+    .max(20, "São no máximo 20 itens por pedido."),
 });
 
 export type OrderInput = z.infer<typeof orderInputSchema>;

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CategoryField } from "./category-field";
 import { CoverField } from "./cover-field";
+import { KindField, PriceFields } from "./price-fields";
 
 type Category = { id: number; name: string };
 type Result = { error: string } | { ok: true };
@@ -15,7 +16,10 @@ export function EditBeatForm({
   categories: Category[];
   beat: {
     title: string;
-    priceCents: number;
+    kind: "beat" | "service";
+    priceCents: number | null;
+    priceWavCents: number | null;
+    priceExclusiveCents: number | null;
     bpm: number | null;
     musicalKey: string | null;
     description: string | null;
@@ -27,6 +31,7 @@ export function EditBeatForm({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, setPending] = useState(false);
+  const [kind, setKind] = useState(beat.kind);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,6 +49,8 @@ export function EditBeatForm({
   return (
     <form onSubmit={onSubmit} className="max-w-xl space-y-8">
       <div className="space-y-5">
+        <KindField value={kind} onChange={setKind} />
+
         <div className="space-y-2">
           <label htmlFor="title" className="block text-sm text-muted">
             Título
@@ -51,20 +58,20 @@ export function EditBeatForm({
           <input id="title" name="title" defaultValue={beat.title} required className={field} />
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label htmlFor="price" className="block text-sm text-muted">
-              Preço (R$)
-            </label>
-            <input
-              id="price"
-              name="price"
-              inputMode="decimal"
-              defaultValue={(beat.priceCents / 100).toFixed(2)}
-              required
-              className={field}
-            />
-          </div>
+        <PriceFields
+          // Remounts when the type changes so the fields for the other type do
+          // not keep a stale defaultValue from the one just left behind.
+          key={kind}
+          kind={kind}
+          defaults={{
+            priceCents: beat.priceCents,
+            priceWavCents: beat.priceWavCents,
+            priceExclusiveCents: beat.priceExclusiveCents,
+          }}
+        />
+
+        {kind === "beat" && (
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label htmlFor="bpm" className="block text-sm text-muted">
               BPM
@@ -92,6 +99,7 @@ export function EditBeatForm({
             />
           </div>
         </div>
+        )}
 
         <div className="space-y-2">
           <label htmlFor="description" className="block text-sm text-muted">
