@@ -1,9 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { formatPrice, formatDuration, formatPostedDate } from "@/lib/beats/format";
-import { licensePriceCents, LICENSES, type LineLicense } from "@/lib/beats/licenses";
+import { useEffect, useRef, useState } from "react";
+import {
+  formatPrice,
+  formatDuration,
+  formatPostedDate,
+  formatCount,
+} from "@/lib/beats/format";
+import {
+  licensePriceCents,
+  LICENSES,
+  LICENSE_TERMS,
+  type License,
+  type LineLicense,
+} from "@/lib/beats/licenses";
 import { waveformFor } from "@/lib/beats/waveform";
 import { usePreviewPlayer } from "@/components/preview-player";
 import { useCart } from "@/components/cart/cart-provider";
@@ -28,6 +39,9 @@ export function BeatDialog({
   const playing = playingId === beat.id;
   const bars = waveformFor(beat.slug, 72);
   const service = beat.kind === "service";
+  // Picking a licence only shows what it grants; nothing reaches the cart until
+  // the buyer presses the button under those terms.
+  const [selected, setSelected] = useState<License>("mp3");
 
   // The native dialog brings focus trapping, Esc and the top layer with it, so
   // none of that has to be rebuilt here.
@@ -71,16 +85,29 @@ export function BeatDialog({
     [t.specPosted, formatPostedDate(beat.createdAt, locale) || t.specUnknown],
   ];
 
-  const licenseNotes: Record<(typeof LICENSES)[number], string> = {
-    mp3: t.licenseMp3Note,
-    wav: t.licenseWavNote,
-    exclusive: t.licenseExclusiveNote,
+  const licenseNames: Record<License, string> = {
+    mp3: t.licenseMp3Name,
+    wav: t.licenseWavName,
+    exclusive: t.licenseExclusiveName,
   };
-  const licenseLabels: Record<(typeof LICENSES)[number], string> = {
-    mp3: t.licenseMp3,
-    wav: t.licenseWav,
-    exclusive: t.licenseExclusive,
-  };
+
+  const selectedPrice = licensePriceCents(beat, selected);
+  const selectedTerms = LICENSE_TERMS[selected];
+  const selectedInCart = has(beat.id, selected);
+
+  // A null cap means unlimited, which only the exclusive licence has.
+  const cap = (value: number | null) =>
+    value === null ? t.termUnlimited : formatCount(value, locale);
+
+  const termLines: string[] = [
+    t.termFiles,
+    t.termFormats(selectedTerms.formats),
+    t.termStreams(cap(selectedTerms.streams)),
+    t.termPerformances(cap(selectedTerms.performances)),
+    t.termBroadcasts(cap(selectedTerms.broadcasts)),
+    t.termMusicVideos(cap(selectedTerms.musicVideos)),
+    t.termDistribution(cap(selectedTerms.distributionCopies)),
+  ];
 
   return (
     <dialog
@@ -179,32 +206,80 @@ export function BeatDialog({
           ) : (
             <div className="mt-auto">
               <p className="mono mb-3 text-[11px] text-muted">{t.licenseTitle}</p>
-              {/* One button per licence rather than a single price: the licence
-                  is what is actually bought, and its price follows from it. */}
+              {/* Choosing a licence is a selection, not a purchase: the terms
+                  below change with it, and only the button underneath buys. */}
               <div className="grid gap-2 sm:grid-cols-3">
                 {LICENSES.map((license) => {
                   const price = licensePriceCents(beat, license);
-                  const inCart = has(beat.id, license);
+                  const active = license === selected;
                   return (
                     <button
                       key={license}
                       type="button"
-                      disabled={inCart}
-                      onClick={() => addLicense(license)}
-                      title={licenseNotes[license]}
-                      className="mono flex flex-col items-start gap-1 border border-border px-4 py-3 text-left text-xs transition-colors hover:border-foreground disabled:opacity-40"
+                      aria-pressed={active}
+                      onClick={() => setSelected(license)}
+                      className={`mono flex flex-col items-start gap-1 border px-4 py-3 text-left text-xs transition-colors ${
+                        active
+                          ? "border-foreground bg-surface-raised"
+                          : "border-border text-muted hover:border-muted"
+                      }`}
                     >
-                      <span>{licenseLabels[license]}</span>
-                      <span className="text-muted">
-                        {inCart
-                          ? t.inCart
-                          : price === null
-                            ? t.licenseInquire
-                            : formatPrice(price)}
+                      <span>{licenseNames[license]}</span>
+                      <span className={active ? "text-sm" : "text-sm text-muted"}>
+                        {price === null ? t.licenseMakeOffer : formatPrice(price)}
+                      </span>
+                      <span className="text-[10px] text-muted">
+                        {LICENSE_TERMS[license].formats}
                       </span>
                     </button>
                   );
                 })}
+              </div>
+
+              <div className="mt-6 border-t border-border pt-5">
+                <div className="flex items-baseline justify-between gap-4">
+                  <h3 className="display text-base">{t.termsTitle}</h3>
+                  <span className="mono text-[11px] text-muted">
+                    {t.termsFor(
+                      licenseNames[selected],
+                      selectedPrice === null
+                        ? t.licenseInquire
+                        : formatPrice(selectedPrice),
+                    )}
+                  </span>
+                </div>
+
+                <ul className="mono mt-4 grid gap-y-2 text-[11px] text-muted sm:grid-cols-2 sm:gap-x-6">
+                  {termLines.map((line) => (
+                    <li key={line} className="flex gap-2">
+                      <span aria-hidden className="text-foreground">
+                        ·
+                      </span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {selected === "exclusive" && (
+                  <p className="mt-4 text-xs leading-relaxed text-muted">
+                    {t.termExclusiveNote}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  disabled={selectedInCart}
+                  onClick={() => addLicense(selected)}
+                  className="mono mt-5 w-full bg-foreground px-4 py-3 text-xs text-background transition-opacity hover:opacity-80 disabled:opacity-40"
+                >
+                  {selectedInCart
+                    ? t.inCart
+                    : `${t.addToCart} · ${
+                        selectedPrice === null
+                          ? t.licenseInquire
+                          : formatPrice(selectedPrice)
+                      }`}
+                </button>
               </div>
             </div>
           )}

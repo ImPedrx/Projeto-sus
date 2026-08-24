@@ -85,6 +85,24 @@ export const dictionary = {
     licenseWavNote: "WAV e MP3 sem tag, uso não exclusivo.",
     licenseExclusiveNote:
       "Direitos exclusivos: o beat sai do catálogo. Valor combinado direto com o produtor.",
+    licenseMp3Name: "Basic MP3",
+    licenseWavName: "WAV Lease",
+    licenseExclusiveName: "Exclusive",
+    licenseMakeOffer: "Faça uma oferta",
+    termsTitle: "O que essa licença permite",
+    termsFor: (license: string, price: string) => `${license} · ${price}`,
+    termFiles: "Arquivos liberados na hora da confirmação",
+    termFormats: (formats: string) => `Formatos: ${formats}`,
+    // Label first, value last: it reads the same whether the cap is a number or
+    // "Ilimitado", and sidesteps agreeing the noun with a count of one.
+    termStreams: (value: string) => `Streams: ${value}`,
+    termPerformances: (value: string) => `Apresentações ao vivo: ${value}`,
+    termBroadcasts: (value: string) => `Rádio/TV: ${value}`,
+    termMusicVideos: (value: string) => `Videoclipes: ${value}`,
+    termDistribution: (value: string) => `Cópias distribuídas: ${value}`,
+    termUnlimited: "Ilimitado",
+    termExclusiveNote:
+      "Direitos exclusivos, sem limite de uso. O beat sai do catálogo e ninguém mais pode comprá-lo.",
     addToCart: "Adicionar ao carrinho",
     inCart: "No carrinho",
     cartTitle: "Carrinho",
@@ -177,6 +195,24 @@ export const dictionary = {
     licenseWavNote: "Untagged WAV and MP3, non-exclusive use.",
     licenseExclusiveNote:
       "Full rights: the beat leaves the catalog. Price agreed directly with the producer.",
+    licenseMp3Name: "Basic MP3",
+    licenseWavName: "WAV Lease",
+    licenseExclusiveName: "Exclusive",
+    licenseMakeOffer: "Make offer",
+    termsTitle: "What this license covers",
+    termsFor: (license: string, price: string) => `${license} · ${price}`,
+    termFiles: "Files released as soon as the order is confirmed",
+    termFormats: (formats: string) => `Formats: ${formats}`,
+    // Label first, value last: it reads the same whether the cap is a number or
+    // "Unlimited", and sidesteps pluralising a noun after a count of one.
+    termStreams: (value: string) => `Streams: ${value}`,
+    termPerformances: (value: string) => `Live performances: ${value}`,
+    termBroadcasts: (value: string) => `Radio/TV broadcasts: ${value}`,
+    termMusicVideos: (value: string) => `Music videos: ${value}`,
+    termDistribution: (value: string) => `Distributed copies: ${value}`,
+    termUnlimited: "Unlimited",
+    termExclusiveNote:
+      "Full rights, no usage caps. The beat leaves the catalog and nobody else can buy it.",
     addToCart: "Add to cart",
     inCart: "In cart",
     cartTitle: "Cart",

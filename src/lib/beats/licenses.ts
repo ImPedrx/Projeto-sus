@@ -16,6 +16,46 @@ export const DEFAULT_LICENSE_PRICE_CENTS: Record<License, number | null> = {
   exclusive: null,
 };
 
+// What each licence actually grants. A null is "unlimited", never "none": the
+// exclusive licence hands the beat over outright, so every cap disappears.
+export type LicenseTerms = {
+  formats: string;
+  streams: number | null;
+  performances: number | null;
+  broadcasts: number | null;
+  musicVideos: number | null;
+  distributionCopies: number | null;
+};
+
+// The numbers a buyer is agreeing to. Edit them here and every surface that
+// shows the terms follows — nothing else hardcodes a limit.
+export const LICENSE_TERMS: Record<License, LicenseTerms> = {
+  mp3: {
+    formats: "MP3",
+    streams: 50_000,
+    performances: 1,
+    broadcasts: 1,
+    musicVideos: 1,
+    distributionCopies: 1_000,
+  },
+  wav: {
+    formats: "MP3, WAV",
+    streams: 250_000,
+    performances: 3,
+    broadcasts: 2,
+    musicVideos: 2,
+    distributionCopies: 5_000,
+  },
+  exclusive: {
+    formats: "MP3, WAV",
+    streams: null,
+    performances: null,
+    broadcasts: null,
+    musicVideos: null,
+    distributionCopies: null,
+  },
+};
+
 export type LicensePrices = {
   priceCents: number | null;
   priceWavCents: number | null;

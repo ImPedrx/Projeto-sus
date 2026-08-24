@@ -23,6 +23,12 @@ export function formatDuration(seconds: number): string {
 
 const DATE_LOCALES: Record<Locale, string> = { pt: "pt-BR", en: "en-US" };
 
+// Usage caps read as quantities, so they get the locale's thousands separator:
+// 50.000 for a Brazilian reader and 50,000 for an English one.
+export function formatCount(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(DATE_LOCALES[locale]).format(value);
+}
+
 // Day precision only: the catalogue cares about when a beat went up, not the
 // minute, and a fixed UTC zone keeps the server and the browser from rendering
 // two different days for the same row.
