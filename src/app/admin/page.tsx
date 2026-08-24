@@ -38,8 +38,11 @@ export default async function AdminHomePage() {
                   {beat.title}
                 </Link>
                 <p className="text-sm text-muted">
+                  {beat.kind === "service" ? "Serviço" : "Beat"} ·{" "}
                   {beat.categoryNames.join(", ") || "Sem categoria"} ·{" "}
-                  {formatPrice(beat.priceCents)}
+                  {beat.priceCents === null
+                    ? "preço padrão"
+                    : formatPrice(beat.priceCents)}
                 </p>
               </div>
               <span className="text-sm text-muted">{STATUS_LABEL[beat.status]}</span>

@@ -1,14 +1,24 @@
 export const locales = ["pt", "en"] as const;
 export type Locale = (typeof locales)[number];
 
-export type Page = "home" | "catalog" | "checkout";
+export type Page = "home" | "catalog" | "services" | "checkout";
 
 // English lives at the root and Portuguese under /pt: most buyers are abroad,
 // so they get the clean URLs, while the Brazilian audience keeps a real address
 // for each language and search engines get one per locale.
 const PATHS: Record<Locale, Record<Page, string>> = {
-  en: { home: "/", catalog: "/projects", checkout: "/checkout" },
-  pt: { home: "/pt", catalog: "/pt/projetos", checkout: "/pt/checkout" },
+  en: {
+    home: "/",
+    catalog: "/tracks",
+    services: "/services",
+    checkout: "/checkout",
+  },
+  pt: {
+    home: "/pt",
+    catalog: "/pt/faixas",
+    services: "/pt/servicos",
+    checkout: "/pt/checkout",
+  },
 };
 
 export function pathFor(locale: Locale, page: Page): string {
@@ -27,7 +37,6 @@ export const dictionary = {
     heroTitleLine3: "Grava hoje.",
     heroLead:
       "Trap, drill, boom bap e o que mais aparecer. Ouça o preview aqui mesmo; depois da compra o arquivo sem tag vai direto pro seu e-mail.",
-    heroCta: "Ouvir os beats",
     statBeats: (count: number) => (count === 1 ? "1 beat no catálogo" : `${count} beats no catálogo`),
     statCategories: (count: number) =>
       count === 1 ? "1 categoria" : `${count} categorias`,
@@ -38,9 +47,15 @@ export const dictionary = {
       "Nenhum beat publicado ainda. Eles aparecem aqui assim que saem do rascunho no painel.",
     emptyCategory: (category: string) =>
       `Nenhum beat em ${category} por enquanto. Tente outra categoria.`,
-    catalogTitle: "Projetos",
+    catalogTitle: "Faixas",
+    servicesTitle: "Serviços",
+    servicesLead:
+      "Mixagem, master, beat sob encomenda e o que mais o seu projeto pedir. Escolha um serviço e o produtor responde por e-mail com prazo e forma de pagamento.",
+    emptyServices:
+      "Nenhum serviço publicado ainda. Eles aparecem aqui assim que saem do rascunho no painel.",
     filterAll: "Todos",
-    navCatalog: "Projetos",
+    navCatalog: "Faixas",
+    navServices: "Serviços",
     navLogin: "Login",
     footerTagline: "Sus — beats e projetos exclusivos",
     cardNoCategory: "sem categoria",
@@ -57,13 +72,27 @@ export const dictionary = {
     specDuration: "Duração",
     specFormats: "Formatos",
     specCategories: "Categorias",
+    specPosted: "Postado em",
     specUnknown: "—",
+    postedOn: (date: string) => `postado em ${date}`,
+    priceFrom: (price: string) => `a partir de ${price}`,
+    licenseTitle: "Licença",
+    licenseMp3: "MP3",
+    licenseWav: "WAV",
+    licenseExclusive: "EXCLUSIVE",
+    licenseInquire: "sob consulta",
+    licenseMp3Note: "MP3 sem tag, uso não exclusivo.",
+    licenseWavNote: "WAV e MP3 sem tag, uso não exclusivo.",
+    licenseExclusiveNote:
+      "Direitos exclusivos: o beat sai do catálogo. Valor combinado direto com o produtor.",
     addToCart: "Adicionar ao carrinho",
     inCart: "No carrinho",
     cartTitle: "Carrinho",
     cartEmpty: "Seu carrinho está vazio. Escolha um beat para começar.",
     cartRemove: "Remover",
     cartTotalLabel: "Total",
+    cartQuoteNote:
+      "Os itens sob consulta não entram no total — o produtor envia o valor quando responder.",
     cartCheckout: "Finalizar pedido",
     cartOpen: "Abrir carrinho",
     checkoutTitle: "Fechar pedido",
@@ -100,7 +129,6 @@ export const dictionary = {
     heroTitleLine3: "Record today.",
     heroLead:
       "Trap, drill, boom bap and whatever comes next. Preview it right here; once you buy, the untagged file lands in your inbox.",
-    heroCta: "Hear the beats",
     statBeats: (count: number) => (count === 1 ? "1 beat in the catalog" : `${count} beats in the catalog`),
     statCategories: (count: number) =>
       count === 1 ? "1 category" : `${count} categories`,
@@ -111,9 +139,15 @@ export const dictionary = {
       "No beats published yet. They show up here as soon as they leave draft in the admin panel.",
     emptyCategory: (category: string) =>
       `No beats in ${category} right now. Try another category.`,
-    catalogTitle: "Projects",
+    catalogTitle: "Tracks",
+    servicesTitle: "Services",
+    servicesLead:
+      "Mixing, mastering, custom beats and whatever else the project needs. Pick a service and the producer replies by email with the turnaround and how to pay.",
+    emptyServices:
+      "No services published yet. They show up here as soon as they leave draft in the admin panel.",
     filterAll: "All",
-    navCatalog: "Projects",
+    navCatalog: "Tracks",
+    navServices: "Services",
     navLogin: "Login",
     footerTagline: "Sus — exclusive beats and custom projects",
     cardNoCategory: "no category",
@@ -130,13 +164,27 @@ export const dictionary = {
     specDuration: "Length",
     specFormats: "Formats",
     specCategories: "Categories",
+    specPosted: "Posted",
     specUnknown: "—",
+    postedOn: (date: string) => `posted ${date}`,
+    priceFrom: (price: string) => `from ${price}`,
+    licenseTitle: "License",
+    licenseMp3: "MP3",
+    licenseWav: "WAV",
+    licenseExclusive: "EXCLUSIVE",
+    licenseInquire: "inquire",
+    licenseMp3Note: "Untagged MP3, non-exclusive use.",
+    licenseWavNote: "Untagged WAV and MP3, non-exclusive use.",
+    licenseExclusiveNote:
+      "Full rights: the beat leaves the catalog. Price agreed directly with the producer.",
     addToCart: "Add to cart",
     inCart: "In cart",
     cartTitle: "Cart",
     cartEmpty: "Your cart is empty. Pick a beat to start.",
     cartRemove: "Remove",
     cartTotalLabel: "Total",
+    cartQuoteNote:
+      "Items marked inquire stay out of the total — the producer sends the price when he replies.",
     cartCheckout: "Place order",
     cartOpen: "Open cart",
     checkoutTitle: "Place your order",

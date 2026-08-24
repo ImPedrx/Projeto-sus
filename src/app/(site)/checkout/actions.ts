@@ -5,6 +5,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import { orderInputSchema } from "@/lib/orders/schema";
 import { buildOrderMessage, buildOrderSubject } from "@/lib/orders/message";
 import { sendEmail } from "@/lib/email/send";
+import { licensePriceCents, type LineLicense } from "@/lib/beats/licenses";
 
 export type PlaceOrderResult = { code: string } | { error: string };
 
@@ -58,7 +59,7 @@ async function notifyProducer(
     artistName?: string;
     instagram?: string;
     note?: string;
-    beatIds: number[];
+    items: Array<{ beatId: number; license: LineLicense }>;
   },
 ) {
   const recipient = process.env.ORDER_NOTIFICATION_TO;
@@ -73,14 +74,36 @@ async function notifyProducer(
     // cart, for the same reason the total is computed in the database.
     const { data: beats } = await supabase
       .from("beats")
-      .select("title, price_cents")
-      .in("id", input.beatIds);
+      .select("id, title, price_cents, price_wav_cents, price_exclusive_cents")
+      .in(
+        "id",
+        input.items.map((item) => item.beatId),
+      );
 
-    const items = (beats ?? []).map((beat) => ({
-      title: beat.title,
-      priceCents: beat.price_cents,
-    }));
-    const totalCents = items.reduce((sum, item) => sum + item.priceCents, 0);
+    const byId = new Map((beats ?? []).map((beat) => [beat.id, beat]));
+
+    const items = input.items.flatMap((line) => {
+      const beat = byId.get(line.beatId);
+      if (!beat) return [];
+      return [
+        {
+          title: beat.title,
+          license: line.license,
+          priceCents: licensePriceCents(
+            {
+              priceCents: beat.price_cents,
+              priceWavCents: beat.price_wav_cents,
+              priceExclusiveCents: beat.price_exclusive_cents,
+            },
+            line.license,
+          ),
+        },
+      ];
+    });
+
+    // Unpriced lines are quoted by hand, the same way place_order() leaves them
+    // out of the stored total.
+    const totalCents = items.reduce((sum, item) => sum + (item.priceCents ?? 0), 0);
 
     const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
 

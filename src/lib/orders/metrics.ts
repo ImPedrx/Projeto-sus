@@ -103,7 +103,7 @@ export async function getDashboardMetrics(
   const itemRows = (items ?? []) as Array<{
     beat_id: number;
     title: string;
-    price_cents: number;
+    price_cents: number | null;
   }>;
   for (const item of itemRows) {
     const current = byBeat.get(item.beat_id) ?? {
@@ -113,7 +113,9 @@ export async function getDashboardMetrics(
       revenueCents: 0,
     };
     current.count += 1;
-    current.revenueCents += item.price_cents;
+    // A line quoted by hand carries no price, so it counts as a sale but adds
+    // nothing to revenue until the producer records what it went for.
+    current.revenueCents += item.price_cents ?? 0;
     byBeat.set(item.beat_id, current);
   }
 

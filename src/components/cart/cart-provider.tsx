@@ -8,7 +8,13 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { addToCart, removeFromCart, type CartItem } from "@/lib/cart";
+import {
+  addToCart,
+  cartItemKey,
+  removeFromCart,
+  type CartItem,
+} from "@/lib/cart";
+import type { LineLicense } from "@/lib/beats/licenses";
 import {
   getCartSnapshot,
   getCartServerSnapshot,
@@ -19,9 +25,9 @@ import {
 type CartState = {
   items: CartItem[];
   add: (item: CartItem) => void;
-  remove: (id: number) => void;
+  remove: (key: string) => void;
   clear: () => void;
-  has: (id: number) => boolean;
+  has: (beatId: number, license: LineLicense) => boolean;
   open: boolean;
   setOpen: (open: boolean) => void;
 };
@@ -44,8 +50,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
-  const remove = useCallback((id: number) => {
-    writeCart(removeFromCart(getCartSnapshot(), id));
+  const remove = useCallback((key: string) => {
+    writeCart(removeFromCart(getCartSnapshot(), key));
   }, []);
 
   // Emptied once the order is placed: what the buyer requested now lives in the
@@ -56,7 +62,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const has = useCallback(
-    (id: number) => items.some((item) => item.id === id),
+    (beatId: number, license: LineLicense) =>
+      items.some((item) => cartItemKey(item) === cartItemKey({ beatId, license })),
     [items],
   );
 

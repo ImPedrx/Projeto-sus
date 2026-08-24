@@ -6,10 +6,10 @@ const order = {
   customerName: "João Paulo",
   customerEmail: "joao@example.com",
   items: [
-    { title: "Escape Route", priceCents: 19900 },
-    { title: "Walkin", priceCents: 29900 },
+    { title: "Escape Route", license: "mp3" as const, priceCents: 6000 },
+    { title: "Walkin", license: "wav" as const, priceCents: 12000 },
   ],
-  totalCents: 49800,
+  totalCents: 18000,
 };
 
 describe("buildOrderMessage", () => {
@@ -19,12 +19,28 @@ describe("buildOrderMessage", () => {
     expect(message).toContain("joao@example.com");
     expect(message).toContain("Escape Route");
     expect(message).toContain("Walkin");
-    expect(message).toContain("R$ 199,00");
-    expect(message).toContain("R$ 299,00");
+    expect(message).toContain("$60.00");
+    expect(message).toContain("$120.00");
+  });
+
+  it("names the licence bought for each item", () => {
+    const message = buildOrderMessage(order);
+    expect(message).toContain("Escape Route [MP3]");
+    expect(message).toContain("Walkin [WAV]");
+  });
+
+  it("marks an exclusive licence with no price as a quote", () => {
+    const message = buildOrderMessage({
+      ...order,
+      items: [{ title: "Escape Route", license: "exclusive" as const, priceCents: null }],
+      totalCents: 0,
+    });
+    expect(message).toContain("Escape Route [EXCLUSIVE] — sob consulta");
+    expect(message).toContain("itens sob consulta não entram no total");
   });
 
   it("states the total the database computed", () => {
-    expect(buildOrderMessage(order)).toContain("Total: R$ 498,00");
+    expect(buildOrderMessage(order)).toContain("Total: $180.00");
   });
 
   it("leaves out the optional fields that were not filled", () => {

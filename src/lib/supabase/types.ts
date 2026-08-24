@@ -12,6 +12,10 @@ export type Json =
 
 export type BeatStatus = "draft" | "published" | "sold";
 
+export type BeatKind = "beat" | "service";
+
+export type OrderItemLicense = "mp3" | "wav" | "exclusive" | "service";
+
 export type OrderStatus = "pending" | "approved" | "paid" | "cancelled";
 
 export type Database = {
@@ -52,14 +56,17 @@ export type Database = {
           id: number;
           title: string;
           slug: string;
-          price_cents: number;
+          kind: BeatKind;
+          price_cents: number | null;
+          price_wav_cents: number | null;
+          price_exclusive_cents: number | null;
           bpm: number | null;
           musical_key: string | null;
           duration_seconds: number | null;
           description: string | null;
           cover_path: string | null;
-          preview_path: string;
-          master_mp3_path: string;
+          preview_path: string | null;
+          master_mp3_path: string | null;
           master_wav_path: string | null;
           status: BeatStatus;
           created_at: string;
@@ -69,14 +76,17 @@ export type Database = {
           id?: never;
           title: string;
           slug: string;
-          price_cents: number;
+          kind?: BeatKind;
+          price_cents?: number | null;
+          price_wav_cents?: number | null;
+          price_exclusive_cents?: number | null;
           bpm?: number | null;
           musical_key?: string | null;
           duration_seconds?: number | null;
           description?: string | null;
           cover_path?: string | null;
-          preview_path: string;
-          master_mp3_path: string;
+          preview_path?: string | null;
+          master_mp3_path?: string | null;
           master_wav_path?: string | null;
           status?: BeatStatus;
           created_at?: string;
@@ -86,14 +96,17 @@ export type Database = {
           id?: never;
           title?: string;
           slug?: string;
-          price_cents?: number;
+          kind?: BeatKind;
+          price_cents?: number | null;
+          price_wav_cents?: number | null;
+          price_exclusive_cents?: number | null;
           bpm?: number | null;
           musical_key?: string | null;
           duration_seconds?: number | null;
           description?: string | null;
           cover_path?: string | null;
-          preview_path?: string;
-          master_mp3_path?: string;
+          preview_path?: string | null;
+          master_mp3_path?: string | null;
           master_wav_path?: string | null;
           status?: BeatStatus;
           created_at?: string;
@@ -144,8 +157,11 @@ export type Database = {
         Row: {
           order_id: number;
           beat_id: number;
+          license: OrderItemLicense;
           title: string;
-          price_cents: number;
+          // Null on an exclusive licence with no published price: that line is
+          // quoted by hand once the order arrives.
+          price_cents: number | null;
         };
         Insert: never;
         Update: never;
@@ -171,9 +187,9 @@ export type Database = {
         Args: Record<string, never>;
         Returns: boolean;
       };
-      // Takes beat ids and contact details and returns the order code. The
-      // total is computed inside the function, which is why no amount appears
-      // in the argument type.
+      // Takes { beatId, license } lines and contact details and returns the
+      // order code. The total is computed inside the function, which is why no
+      // amount appears in the argument type.
       place_order: {
         Args: { payload: Json; client_ip: string | null };
         Returns: string;

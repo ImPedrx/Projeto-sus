@@ -21,12 +21,12 @@ describe("dictionary", () => {
 describe("localeFromPathname", () => {
   it("reads Portuguese off the path prefix", () => {
     expect(localeFromPathname("/pt")).toBe("pt");
-    expect(localeFromPathname("/pt/projetos")).toBe("pt");
+    expect(localeFromPathname("/pt/faixas")).toBe("pt");
   });
 
   it("falls back to English", () => {
     expect(localeFromPathname("/")).toBe("en");
-    expect(localeFromPathname("/projects")).toBe("en");
+    expect(localeFromPathname("/tracks")).toBe("en");
     // A path that merely starts with the locale letters is not the locale.
     expect(localeFromPathname("/ptbr")).toBe("en");
   });
@@ -35,11 +35,13 @@ describe("localeFromPathname", () => {
 describe("pathFor", () => {
   it("keeps English at the root", () => {
     expect(pathFor("en", "home")).toBe("/");
-    expect(pathFor("en", "catalog")).toBe("/projects");
+    expect(pathFor("en", "catalog")).toBe("/tracks");
+    expect(pathFor("en", "services")).toBe("/services");
   });
 
   it("prefixes Portuguese and keeps its slug", () => {
     expect(pathFor("pt", "home")).toBe("/pt");
-    expect(pathFor("pt", "catalog")).toBe("/pt/projetos");
+    expect(pathFor("pt", "catalog")).toBe("/pt/faixas");
+    expect(pathFor("pt", "services")).toBe("/pt/servicos");
   });
 });

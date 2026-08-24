@@ -17,7 +17,7 @@ export default async function EditBeatPage({
     supabase
       .from("beats")
       .select(
-        "id, title, price_cents, bpm, musical_key, description, cover_path, beat_categories(category_id)",
+        "id, title, kind, price_cents, price_wav_cents, price_exclusive_cents, bpm, musical_key, description, cover_path, beat_categories(category_id)",
       )
       .eq("id", beatId)
       .single(),
@@ -33,7 +33,10 @@ export default async function EditBeatPage({
         categories={categories ?? []}
         beat={{
           title: beat.title,
+          kind: beat.kind,
           priceCents: beat.price_cents,
+          priceWavCents: beat.price_wav_cents,
+          priceExclusiveCents: beat.price_exclusive_cents,
           bpm: beat.bpm,
           musicalKey: beat.musical_key,
           description: beat.description,

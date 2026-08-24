@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/components/cart/cart-provider";
 import { formatPrice } from "@/lib/beats/format";
-import { cartTotal } from "@/lib/cart";
+import { cartHasUnpricedItem, cartItemKey, cartTotal } from "@/lib/cart";
 import { copyFor, pathFor, type Locale } from "@/lib/i18n";
 
 export function CartDrawer({ locale }: { locale: Locale }) {
@@ -43,7 +43,7 @@ export function CartDrawer({ locale }: { locale: Locale }) {
         ) : (
           <ul className="flex-1 divide-y divide-border overflow-y-auto">
             {items.map((item) => (
-              <li key={item.id} className="flex items-center gap-4 px-5 py-4">
+              <li key={cartItemKey(item)} className="flex items-center gap-4 px-5 py-4">
                 <div className="relative size-14 shrink-0 overflow-hidden border border-border bg-surface-raised">
                   {item.coverUrl && (
                     <Image
@@ -58,12 +58,17 @@ export function CartDrawer({ locale }: { locale: Locale }) {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm">{item.title}</p>
                   <p className="mono text-[11px] text-muted">
-                    {formatPrice(item.priceCents)}
+                    {item.license !== "service" && (
+                      <span className="uppercase">{item.license} · </span>
+                    )}
+                    {item.priceCents === null
+                      ? t.licenseInquire
+                      : formatPrice(item.priceCents)}
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => remove(item.id)}
+                  onClick={() => remove(cartItemKey(item))}
                   className="mono text-[11px] text-muted hover:text-foreground"
                 >
                   {t.cartRemove}
@@ -78,6 +83,9 @@ export function CartDrawer({ locale }: { locale: Locale }) {
             <span className="text-muted">{t.cartTotalLabel}</span>
             <span>{formatPrice(cartTotal(items))}</span>
           </div>
+          {cartHasUnpricedItem(items) && (
+            <p className="mono mt-2 text-[11px] text-muted">{t.cartQuoteNote}</p>
+          )}
           <Link
             href={pathFor(locale, "checkout")}
             onClick={() => setOpen(false)}
