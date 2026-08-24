@@ -136,10 +136,11 @@ export function BeatDialog({
           panel runs the full length of the text beside it — a fixed height
           here left a strip of the page background under it. */}
       <div className="grid gap-0 md:grid-cols-2">
-        <div className="bg-surface-raised p-6 md:p-8">
-          {/* Sticky inside the panel rather than being the panel: the art
-              stays in view while the terms scroll, and the grey stays put. */}
-          <div className="flex justify-center md:sticky md:top-8">
+        <div className="flex items-center justify-center bg-surface-raised p-6 md:p-8">
+          {/* Centred in the panel rather than pinned to its top: the dialog
+              scrolls by barely more than its own padding, so holding the art
+              in place bought less than sitting it in the middle does. */}
+          <div className="flex w-full justify-center">
           {beat.coverUrl ? (
             // The same tilt the cards on the home page have: the art follows
             // the cursor, so it reads as the same object opened up.
