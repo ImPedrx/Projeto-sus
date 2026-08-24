@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import TiltedCard from "@/components/TiltedCard/TiltedCard";
 import { useEffect, useRef, useState } from "react";
 import {
   formatPrice,
@@ -132,18 +132,31 @@ export function BeatDialog({
         {t.dialogClose}
       </button>
 
-      <div className="grid gap-0 md:grid-cols-2">
-        <div className="relative aspect-square bg-surface-raised">
+      <div className="grid items-start gap-0 md:grid-cols-2">
+        {/* The terms made the right column tall enough to scroll, so the art
+            sticks to the top of the viewport and stays centred in its half
+            rather than scrolling away on the first flick of the wheel. */}
+        <div className="flex justify-center bg-surface-raised p-6 md:sticky md:top-0 md:h-[min(90svh,44rem)] md:items-center md:p-8">
           {beat.coverUrl ? (
-            <Image
-              src={beat.coverUrl}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 92vw, 32rem"
-              className="object-cover grayscale"
-            />
+            // The same tilt the cards on the home page have: the art follows
+            // the cursor, so it reads as the same object opened up.
+            <div className="aspect-square w-full max-w-sm">
+              <TiltedCard
+                imageSrc={beat.coverUrl}
+                altText={beat.title}
+                containerHeight="100%"
+                containerWidth="100%"
+                imageHeight="100%"
+                imageWidth="100%"
+                rotateAmplitude={12}
+                scaleOnHover={1.04}
+                showMobileWarning={false}
+                showTooltip={false}
+                displayOverlayContent={false}
+              />
+            </div>
           ) : (
-            <div className="flex h-full w-full items-center gap-[3px] px-8">
+            <div className="flex aspect-square w-full max-w-sm items-center gap-[3px]">
               {bars.map((height, index) => (
                 <span
                   key={index}
