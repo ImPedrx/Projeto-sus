@@ -124,11 +124,12 @@ export function CheckoutForm({ locale }: { locale: Locale }) {
         <ul className="divide-y divide-border">
           {items.map((item) => (
             <li key={cartItemKey(item)} className="flex items-baseline justify-between gap-4 px-5 py-3">
-              <span className="truncate text-sm">
-                {item.title}
+              {/* The licence sits outside the truncating span: inside it, a
+                  long title ate the licence and left "EXCL…" on screen. */}
+              <span className="flex min-w-0 items-baseline gap-1.5 text-sm">
+                <span className="truncate">{item.title}</span>
                 {item.license !== "service" && (
-                  <span className="mono text-[11px] text-muted uppercase">
-                    {" "}
+                  <span className="mono shrink-0 text-[11px] text-muted uppercase">
                     · {item.license}
                   </span>
                 )}
