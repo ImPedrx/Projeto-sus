@@ -132,11 +132,14 @@ export function BeatDialog({
         {t.dialogClose}
       </button>
 
-      <div className="grid items-start gap-0 md:grid-cols-2">
-        {/* The terms made the right column tall enough to scroll, so the art
-            sticks to the top of the viewport and stays centred in its half
-            rather than scrolling away on the first flick of the wheel. */}
-        <div className="flex justify-center bg-surface-raised p-6 md:sticky md:top-0 md:h-[min(90svh,44rem)] md:items-center md:p-8">
+      {/* The grid stretches both columns to the same height, so the raised
+          panel runs the full length of the text beside it — a fixed height
+          here left a strip of the page background under it. */}
+      <div className="grid gap-0 md:grid-cols-2">
+        <div className="bg-surface-raised p-6 md:p-8">
+          {/* Sticky inside the panel rather than being the panel: the art
+              stays in view while the terms scroll, and the grey stays put. */}
+          <div className="flex justify-center md:sticky md:top-8">
           {beat.coverUrl ? (
             // The same tilt the cards on the home page have: the art follows
             // the cursor, so it reads as the same object opened up.
@@ -166,6 +169,7 @@ export function BeatDialog({
               ))}
             </div>
           )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-6 p-6 md:p-8">
