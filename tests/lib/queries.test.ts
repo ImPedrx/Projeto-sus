@@ -17,12 +17,14 @@ describe("listBeatsForAdmin", () => {
       {
         id: 1,
         title: "Dark Night",
+        kind: "beat",
         price_cents: 19900,
         status: "published",
         beat_categories: [
           { categories: { name: "Dark Trap" } },
           { categories: { name: "Drill" } },
         ],
+        order_items: [{ count: 3 }],
       },
     ];
 
@@ -30,11 +32,31 @@ describe("listBeatsForAdmin", () => {
       {
         id: 1,
         title: "Dark Night",
+        kind: "beat",
         priceCents: 19900,
         status: "published",
         categoryNames: ["Dark Trap", "Drill"],
+        orderCount: 3,
       },
     ]);
+  });
+
+  // An embedded count comes back as no rows at all when nothing points at the
+  // beat, and that is the case that decides whether the admin offers a delete.
+  it("reads a beat nobody ordered as zero orders", async () => {
+    const rows = [
+      {
+        id: 4,
+        title: "Sem pedido",
+        kind: "beat",
+        price_cents: 9900,
+        status: "draft",
+        beat_categories: [],
+        order_items: [],
+      },
+    ];
+
+    expect((await listBeatsForAdmin(stubClient(rows)))[0].orderCount).toBe(0);
   });
 
   it("returns an empty list when there are no beats", async () => {

@@ -2,13 +2,14 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { listBeatsForAdmin } from "@/lib/beats/queries";
 import { formatPrice } from "@/lib/beats/format";
-import { setBeatStatus, deleteBeat } from "./beats/actions";
+import { archiveBeat, setBeatStatus, deleteBeat } from "./beats/actions";
 import { BeatRowActions } from "./beats/beat-row-actions";
 
 const STATUS_LABEL = {
   draft: "Rascunho",
   published: "Publicado",
   sold: "Vendido",
+  archived: "Arquivado",
 } as const;
 
 export default async function AdminHomePage() {
@@ -49,7 +50,9 @@ export default async function AdminHomePage() {
               <BeatRowActions
                 id={beat.id}
                 status={beat.status}
+                orderCount={beat.orderCount}
                 setStatus={setBeatStatus}
+                archive={archiveBeat}
                 remove={deleteBeat}
               />
             </li>

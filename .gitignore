@@ -58,3 +58,6 @@ Musicas/
 
 # Design references dropped in by hand; not part of the build.
 Ref/
+
+# Scratch written by the Supabase CLI.
+supabase/.temp/

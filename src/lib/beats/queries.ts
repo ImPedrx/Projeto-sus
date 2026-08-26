@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/supabase/types";
 import { publicAssetUrl } from "@/lib/beats/storage";
 
-export type BeatStatus = "draft" | "published" | "sold";
+export type BeatStatus = "draft" | "published" | "sold" | "archived";
 export type BeatKind = "beat" | "service";
 
 export type AdminBeatRow = {
@@ -12,6 +12,10 @@ export type AdminBeatRow = {
   priceCents: number | null;
   status: BeatStatus;
   categoryNames: string[];
+  // How many order lines point at this beat. Non-zero means it cannot be
+  // deleted -- the foreign key is ON DELETE RESTRICT -- so the admin offers
+  // archiving instead of a delete that would only fail.
+  orderCount: number;
 };
 
 type RawRow = {
@@ -21,6 +25,7 @@ type RawRow = {
   price_cents: number | null;
   status: string;
   beat_categories: Array<{ categories: { name: string } | null }> | null;
+  order_items: Array<{ count: number }> | null;
 };
 
 export async function listBeatsForAdmin(
@@ -28,7 +33,9 @@ export async function listBeatsForAdmin(
 ): Promise<AdminBeatRow[]> {
   const { data, error } = await supabase
     .from("beats")
-    .select("id, title, kind, price_cents, status, beat_categories(categories(name))")
+    .select(
+      "id, title, kind, price_cents, status, beat_categories(categories(name)), order_items(count)",
+    )
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -42,6 +49,9 @@ export async function listBeatsForAdmin(
     categoryNames: (row.beat_categories ?? [])
       .map((link) => link.categories?.name)
       .filter((name): name is string => Boolean(name)),
+    // An embedded count arrives as a one-row array, and as no rows at all when
+    // nothing points at the beat.
+    orderCount: row.order_items?.[0]?.count ?? 0,
   }));
 }
 

@@ -176,6 +176,24 @@ export async function setBeatStatus(id: number, status: BeatStatus) {
   return { ok: true as const };
 }
 
+// Taking a sold beat off the shelf. It cannot be deleted -- an order line
+// points at it and the foreign key is ON DELETE RESTRICT -- so archiving is
+// what "remove it from the store" means for it: the row stays for the order
+// history, and every public read filters on status = 'published' already, so
+// nothing else has to change to hide it.
+export async function archiveBeat(id: number) {
+  const supabase = await assertAdmin();
+  const { error } = await supabase
+    .from("beats")
+    .update({ status: "archived" })
+    .eq("id", id);
+
+  if (error) return { error: "Não foi possível arquivar o beat." };
+
+  revalidatePath("/admin");
+  return { ok: true as const };
+}
+
 export async function updateBeat(id: number, formData: FormData) {
   const parsed = beatInputFrom(formData);
 
@@ -234,7 +252,17 @@ export async function deleteBeat(id: number) {
     .single();
 
   const { error } = await supabase.from("beats").delete().eq("id", id);
-  if (error) return { error: "Não foi possível excluir o beat." };
+  if (error) {
+    // 23503 is the foreign key violation raised by order_items: this beat was
+    // sold, and the record of that sale keeps it alive. Saying so is the whole
+    // difference between a dead end and an obvious next step.
+    return {
+      error:
+        error.code === "23503"
+          ? "Este beat já foi vendido, então não pode ser excluído. Arquive para tirá-lo da loja."
+          : "Não foi possível excluir o beat.",
+    };
+  }
 
   // Remove the files only after the row is gone, so a storage failure never
   // leaves a row pointing at a missing file.

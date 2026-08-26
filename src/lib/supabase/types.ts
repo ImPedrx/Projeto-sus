@@ -10,7 +10,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type BeatStatus = "draft" | "published" | "sold";
+export type BeatStatus = "draft" | "published" | "sold" | "archived";
 
 export type BeatKind = "beat" | "service";
 
