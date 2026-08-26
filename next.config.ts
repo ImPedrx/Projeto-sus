@@ -11,14 +11,15 @@ const nextConfig: NextConfig = {
   // cart, no tilt.
   allowedDevOrigins: ['10.253.1.187', '10.253.1.*', '127.0.0.1'],
   experimental: {
-    // Audio masters are far larger than the 1 MB default for server actions.
-    serverActions: { bodySizeLimit: "150mb" },
-    // A second, separate cap: because this app has a proxy, Next buffers each
-    // request body in memory so both the proxy and the action can read it, and
-    // that buffer defaults to 10 MB. Past it the body is silently truncated and
-    // the action's multipart parser dies with "Unexpected end of form".
-    // It has to sit above the largest upload, not above the largest file.
-    proxyClientMaxBodySize: "120mb",
+    // Audio masters no longer travel through a server action: the host rejects
+    // any request body over 4.5 MB at the edge, before the action runs, so no
+    // limit set here could ever have raised that ceiling. The browser uploads
+    // each file straight to storage with a signed URL instead (see
+    // src/lib/beats/upload-client.ts) and the action receives only paths.
+    //
+    // What is left to size is that text-only form, which is a few kilobytes.
+    // The margin is for the description field and a long category list.
+    serverActions: { bodySizeLimit: "1mb" },
   },
   // The catalogue used to live at /projects; the links are already out in the
   // world, so the old addresses keep working and point at the new ones.

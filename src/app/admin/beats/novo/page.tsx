@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/require-admin";
-import { createBeat } from "../actions";
+import { createBeat, createBeatUploadTargets } from "../actions";
 import { BeatForm } from "../beat-form";
 
 export default async function NewBeatPage() {
@@ -25,7 +25,11 @@ export default async function NewBeatPage() {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold tracking-tight">Novo beat</h1>
-      <BeatForm categories={categories} action={createBeat} />
+      <BeatForm
+        categories={categories}
+        action={createBeat}
+        uploadTargets={createBeatUploadTargets}
+      />
     </div>
   );
 }

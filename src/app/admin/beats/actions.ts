@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 import { assertAdmin } from "@/lib/auth/require-admin";
 import { beatInputSchema } from "@/lib/beats/schema";
 import { slugify } from "@/lib/beats/slug";
-import { bucketFor, storagePathFor, type AssetKind } from "@/lib/beats/storage";
+import {
+  bucketFor,
+  storagePathFor,
+  type AssetKind,
+  type UploadTarget,
+} from "@/lib/beats/storage";
 import type { BeatStatus } from "@/lib/beats/queries";
 
 function parseOptionalInt(value: FormDataEntryValue | null): number | null {
@@ -17,6 +22,13 @@ function parseOptionalInt(value: FormDataEntryValue | null): number | null {
 function parseOptionalPriceCents(value: FormDataEntryValue | null): number | null {
   const text = String(value ?? "").trim().replace(",", ".");
   return text === "" ? null : Math.round(Number(text) * 100);
+}
+
+// A storage path written back into the form by the browser after it uploaded
+// the file itself. Empty means the file was never sent.
+function parseOptionalPath(value: FormDataEntryValue | null): string | null {
+  const text = String(value ?? "").trim();
+  return text === "" ? null : text;
 }
 
 function beatInputFrom(formData: FormData) {
@@ -33,41 +45,79 @@ function beatInputFrom(formData: FormData) {
   });
 }
 
+type TargetResult = { error: string } | { ok: true; targets: UploadTarget[] };
+
+// Hands the browser one short-lived signed upload URL per file so the bytes go
+// straight to storage. The paths are still decided here rather than by the
+// caller: a client that named its own path could write anywhere in the bucket.
+async function signUploads(
+  supabase: Awaited<ReturnType<typeof assertAdmin>>,
+  slug: string,
+  assets: Array<{ kind: AssetKind; filename: string }>,
+): Promise<TargetResult> {
+  const targets: UploadTarget[] = [];
+
+  for (const { kind, filename } of assets) {
+    const bucket = bucketFor(kind);
+    const path = storagePathFor(kind, slug, filename);
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUploadUrl(path, { upsert: true });
+
+    if (error || !data) return { error: `Falha ao preparar o envio (${kind}).` };
+    targets.push({ kind, bucket, path, token: data.token });
+  }
+
+  return { ok: true as const, targets };
+}
+
+// Upload targets for a beat that does not exist yet, so the slug comes from the
+// title the form is about to save under.
+export async function createBeatUploadTargets(
+  title: string,
+  assets: Array<{ kind: AssetKind; filename: string }>,
+): Promise<TargetResult> {
+  const supabase = await assertAdmin();
+  return signUploads(supabase, slugify(title), assets);
+}
+
+// Upload targets for a beat that already exists. Reuse its stored slug so the
+// file name stays stable even when the title changed, and so a replacement
+// overwrites the old art in place.
+export async function editBeatUploadTargets(
+  id: number,
+  assets: Array<{ kind: AssetKind; filename: string }>,
+): Promise<TargetResult> {
+  const supabase = await assertAdmin();
+  const { data: beat } = await supabase
+    .from("beats")
+    .select("slug")
+    .eq("id", id)
+    .single();
+
+  if (!beat) return { error: "Beat não encontrado." };
+  return signUploads(supabase, beat.slug, assets);
+}
+
 export async function createBeat(formData: FormData) {
   const parsed = beatInputFrom(formData);
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const isService = parsed.data.kind === "service";
-  const preview = formData.get("preview") as File | null;
-  const masterMp3 = formData.get("masterMp3") as File | null;
-  const masterWav = formData.get("masterWav") as File | null;
-  const cover = formData.get("cover") as File | null;
+  // The files were uploaded by the browser before this ran; only their storage
+  // paths travel through here.
+  const previewPath = parseOptionalPath(formData.get("previewPath"));
+  const masterMp3Path = parseOptionalPath(formData.get("masterMp3Path"));
+  const masterWavPath = parseOptionalPath(formData.get("masterWavPath"));
+  const coverPath = parseOptionalPath(formData.get("coverPath"));
 
   // A service has nothing to preview and no master to deliver.
-  if (!isService && !preview?.size) return { error: "Envie o preview com a tag de voz." };
-  if (!isService && !masterMp3?.size) return { error: "Envie o MP3 sem tag." };
+  if (!isService && !previewPath) return { error: "Envie o preview com a tag de voz." };
+  if (!isService && !masterMp3Path) return { error: "Envie o MP3 sem tag." };
 
   const supabase = await assertAdmin();
   const slug = slugify(parsed.data.title);
-
-  const uploads: Array<[AssetKind, File]> = [];
-  if (preview?.size) uploads.push(["preview", preview]);
-  if (masterMp3?.size) uploads.push(["mp3", masterMp3]);
-  if (masterWav?.size) uploads.push(["wav", masterWav]);
-  if (cover?.size) uploads.push(["cover", cover]);
-
-  const paths: Partial<Record<AssetKind, string>> = {};
-
-  for (const [kind, file] of uploads) {
-    const path = storagePathFor(kind, slug, file.name);
-    const { error } = await supabase.storage
-      .from(bucketFor(kind))
-      .upload(path, file, { upsert: true, contentType: file.type });
-
-    if (error) return { error: `Falha ao enviar o arquivo (${kind}).` };
-    paths[kind] = path;
-  }
 
   const { data: beat, error: insertError } = await supabase
     .from("beats")
@@ -81,10 +131,10 @@ export async function createBeat(formData: FormData) {
       bpm: parsed.data.bpm,
       musical_key: parsed.data.musicalKey,
       description: parsed.data.description,
-      preview_path: paths.preview ?? null,
-      master_mp3_path: paths.mp3 ?? null,
-      master_wav_path: paths.wav ?? null,
-      cover_path: paths.cover ?? null,
+      preview_path: previewPath,
+      master_mp3_path: masterMp3Path,
+      master_wav_path: masterWavPath,
+      cover_path: coverPath,
       status: "draft",
     })
     .select("id")
@@ -148,22 +198,10 @@ export async function updateBeat(id: number, formData: FormData) {
 
   if (updateError) return { error: "Não foi possível salvar as alterações." };
 
-  // A new cover is optional on edit. Reuse the beat's stored slug for the path
-  // so the file name stays stable even when the title changed, and upsert so a
-  // replacement overwrites the old art in place.
-  const cover = formData.get("cover") as File | null;
-  if (cover?.size) {
-    const { data: existing } = await supabase
-      .from("beats")
-      .select("slug")
-      .eq("id", id)
-      .single();
-    const coverSlug = existing?.slug ?? slugify(parsed.data.title);
-    const coverPath = storagePathFor("cover", coverSlug, cover.name);
-    const { error: coverError } = await supabase.storage
-      .from("beat-public")
-      .upload(coverPath, cover, { upsert: true, contentType: cover.type });
-    if (coverError) return { error: "Falha ao enviar a capa." };
+  // A new cover is optional on edit. When one was picked the browser already
+  // uploaded it under the beat's stored slug, so only the path arrives here.
+  const coverPath = parseOptionalPath(formData.get("coverPath"));
+  if (coverPath) {
     await supabase.from("beats").update({ cover_path: coverPath }).eq("id", id);
   }
 

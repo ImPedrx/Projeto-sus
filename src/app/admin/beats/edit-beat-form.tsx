@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { uploadAssets, type TargetRequest } from "@/lib/beats/upload-client";
 import { CategoryField } from "./category-field";
 import { CoverField } from "./cover-field";
 import { KindField, PriceFields } from "./price-fields";
@@ -12,6 +13,7 @@ export function EditBeatForm({
   categories,
   beat,
   action,
+  uploadTargets,
 }: {
   categories: Category[];
   beat: {
@@ -27,6 +29,7 @@ export function EditBeatForm({
     coverUrl: string | null;
   };
   action: (formData: FormData) => Promise<Result>;
+  uploadTargets: TargetRequest;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -38,10 +41,26 @@ export function EditBeatForm({
     setError(null);
     setSaved(false);
     setPending(true);
-    const result = await action(new FormData(event.currentTarget));
-    setPending(false);
-    if ("error" in result) setError(result.error);
-    else setSaved(true);
+
+    // A Server Action that throws — an expired session, a rejected request —
+    // rejects this promise. Without the catch the button would sit on
+    // "Salvando..." for ever and the producer would never learn why.
+    try {
+      const formData = new FormData(event.currentTarget);
+      const uploadError = await uploadAssets(formData, uploadTargets);
+      if (uploadError) {
+        setError(uploadError);
+        return;
+      }
+
+      const result = await action(formData);
+      if ("error" in result) setError(result.error);
+      else setSaved(true);
+    } catch {
+      setError("Não foi possível salvar. Recarregue a página e tente de novo.");
+    } finally {
+      setPending(false);
+    }
   }
 
   const field = "w-full rounded border border-border bg-surface px-3 py-2";

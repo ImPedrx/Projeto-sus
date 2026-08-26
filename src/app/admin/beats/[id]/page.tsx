@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { publicAssetUrl } from "@/lib/beats/storage";
-import { updateBeat } from "../actions";
+import { editBeatUploadTargets, updateBeat } from "../actions";
 import { EditBeatForm } from "../edit-beat-form";
 
 export default async function EditBeatPage({
@@ -47,6 +47,7 @@ export default async function EditBeatPage({
           ),
         }}
         action={updateBeat.bind(null, beatId)}
+        uploadTargets={editBeatUploadTargets.bind(null, beatId)}
       />
     </div>
   );

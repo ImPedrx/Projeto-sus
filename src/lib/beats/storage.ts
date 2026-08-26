@@ -31,3 +31,12 @@ export function publicAssetUrl(
   if (!path) return null;
   return `${projectUrl.replace(/\/+$/, "")}/storage/v1/object/public/${PUBLIC_BUCKET}/${path}`;
 }
+
+// A signed upload slot: the browser sends the file straight to `path` in
+// `bucket` using `token`, so the bytes never pass through the server.
+export type UploadTarget = {
+  kind: AssetKind;
+  bucket: ReturnType<typeof bucketFor>;
+  path: string;
+  token: string;
+};
