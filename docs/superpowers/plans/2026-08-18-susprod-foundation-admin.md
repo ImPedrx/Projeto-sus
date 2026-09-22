@@ -2,7 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Stand up the Next.js + Supabase foundation and an admin area where SusProd signs in, manages categories, and uploads beats — so the public storefront (plan 2) has real data to render.
+> **Note (post-launch):** Category management was removed from the product per client request. The steps below that create `categories`/`beat_categories` tables and the `/admin/categorias` screen are historical and no longer reflect the shipped schema or admin UI.
+
+**Goal:** Stand up the Next.js + Supabase foundation and an admin area where SusProd signs in and uploads beats — so the public storefront (plan 2) has real data to render.
 
 **Architecture:** A single Next.js App Router project. Supabase provides Postgres, file storage and authentication. All writes go through server actions using a request-scoped Supabase client, so Postgres Row Level Security is the real authorization boundary — the UI never decides who may write. Cover art and tagged previews live in a public storage bucket; the untagged MP3/WAV masters live in a private bucket, handed out only as short-lived signed URLs after a purchase (plan 3).
 

@@ -77,10 +77,6 @@ export function BeatCard({
           </div>
         )}
 
-        <span className="mono absolute top-3 left-3 bg-background/80 px-2 py-1 text-[10px] text-muted backdrop-blur">
-          {beat.categories[0]?.name ?? t.cardNoCategory}
-        </span>
-
         <span className="mono absolute right-3 bottom-3 border border-border bg-background/80 px-2 py-1 text-[10px] opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
           {t.cardExpand}
         </span>

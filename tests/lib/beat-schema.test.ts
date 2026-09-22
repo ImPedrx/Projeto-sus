@@ -8,16 +8,11 @@ const valid = {
   priceExclusiveCents: null,
   bpm: 140,
   musicalKey: "F#m",
-  categoryIds: [1],
 };
 
 describe("beatInputSchema", () => {
   it("accepts a complete beat", () => {
     expect(beatInputSchema.parse(valid).title).toBe("Dark Night");
-  });
-
-  it("requires at least one category", () => {
-    expect(beatInputSchema.safeParse({ ...valid, categoryIds: [] }).success).toBe(false);
   });
 
   it("rejects a zero or negative price", () => {
@@ -55,7 +50,6 @@ describe("beatInputSchema", () => {
       priceExclusiveCents: null,
       bpm: null,
       musicalKey: null,
-      categoryIds: [2],
     });
     expect(result.success).toBe(true);
   });

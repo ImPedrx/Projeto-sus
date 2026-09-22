@@ -84,8 +84,7 @@ export function BeatRow({ beat, locale }: { beat: StoreBeat; locale: Locale }) {
           {beat.title}
         </button>
         <p className="mono mt-1 truncate text-[11px] text-muted">
-          {beat.categories[0]?.name ?? t.cardNoCategory}
-          {meta.length > 0 && ` · ${meta.join(" · ")}`}
+          {meta.length > 0 ? meta.join(" · ") : t.cardNoMeta}
         </p>
       </div>
 

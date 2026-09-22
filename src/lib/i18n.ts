@@ -38,26 +38,20 @@ export const dictionary = {
     heroLead:
       "Trap, drill, boom bap e o que mais aparecer. Ouça o preview aqui mesmo; depois da compra o arquivo sem tag vai direto pro seu e-mail.",
     statBeats: (count: number) => (count === 1 ? "1 beat no catálogo" : `${count} beats no catálogo`),
-    statCategories: (count: number) =>
-      count === 1 ? "1 categoria" : `${count} categorias`,
     statDelivery: "preview com tag · arquivo final limpo",
     latestTitle: "Últimos beats",
     seeAll: "ver todos",
     emptyCatalog:
       "Nenhum beat publicado ainda. Eles aparecem aqui assim que saem do rascunho no painel.",
-    emptyCategory: (category: string) =>
-      `Nenhum beat em ${category} por enquanto. Tente outra categoria.`,
     catalogTitle: "Faixas",
     servicesTitle: "Serviços",
     servicesLead:
       "Mixagem, master, beat sob encomenda e o que mais o seu projeto pedir. Escolha um serviço e o produtor responde por e-mail com prazo e forma de pagamento.",
     emptyServices:
       "Nenhum serviço publicado ainda. Eles aparecem aqui assim que saem do rascunho no painel.",
-    filterAll: "Todos",
     navCatalog: "Faixas",
     navServices: "Serviços",
     footerTagline: "Sus — beats e projetos exclusivos",
-    cardNoCategory: "sem categoria",
     cardNoMeta: "sem metadados",
     cardPlay: "ouvir preview",
     cardPlaying: "tocando preview",
@@ -70,7 +64,6 @@ export const dictionary = {
     specKey: "Tom",
     specDuration: "Duração",
     specFormats: "Formatos",
-    specCategories: "Categorias",
     specPosted: "Postado em",
     specUnknown: "—",
     postedOn: (date: string) => `postado em ${date}`,
@@ -147,26 +140,20 @@ export const dictionary = {
     heroLead:
       "Trap, drill, boom bap and whatever comes next. Preview it right here; once you buy, the untagged file lands in your inbox.",
     statBeats: (count: number) => (count === 1 ? "1 beat in the catalog" : `${count} beats in the catalog`),
-    statCategories: (count: number) =>
-      count === 1 ? "1 category" : `${count} categories`,
     statDelivery: "tagged preview · clean master on purchase",
     latestTitle: "Latest beats",
     seeAll: "see all",
     emptyCatalog:
       "No beats published yet. They show up here as soon as they leave draft in the admin panel.",
-    emptyCategory: (category: string) =>
-      `No beats in ${category} right now. Try another category.`,
     catalogTitle: "Tracks",
     servicesTitle: "Services",
     servicesLead:
       "Mixing, mastering, custom beats and whatever else the project needs. Pick a service and the producer replies by email with the turnaround and how to pay.",
     emptyServices:
       "No services published yet. They show up here as soon as they leave draft in the admin panel.",
-    filterAll: "All",
     navCatalog: "Tracks",
     navServices: "Services",
     footerTagline: "Sus — exclusive beats and custom projects",
-    cardNoCategory: "no category",
     cardNoMeta: "no metadata",
     cardPlay: "play preview",
     cardPlaying: "playing preview",
@@ -179,7 +166,6 @@ export const dictionary = {
     specKey: "Key",
     specDuration: "Length",
     specFormats: "Formats",
-    specCategories: "Categories",
     specPosted: "Posted",
     specUnknown: "—",
     postedOn: (date: string) => `posted ${date}`,

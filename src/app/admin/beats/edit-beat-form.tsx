@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import { uploadAssets, type TargetRequest } from "@/lib/beats/upload-client";
-import { CategoryField } from "./category-field";
 import { CoverField } from "./cover-field";
 import { KindField, PriceFields } from "./price-fields";
 
-type Category = { id: number; name: string };
 type Result = { error: string } | { ok: true };
 
 export function EditBeatForm({
-  categories,
   beat,
   action,
   uploadTargets,
 }: {
-  categories: Category[];
   beat: {
     title: string;
     kind: "beat" | "service";
@@ -25,7 +21,6 @@ export function EditBeatForm({
     bpm: number | null;
     musicalKey: string | null;
     description: string | null;
-    categoryIds: number[];
     coverUrl: string | null;
   };
   action: (formData: FormData) => Promise<Result>;
@@ -136,8 +131,6 @@ export function EditBeatForm({
       </div>
 
       <CoverField currentUrl={beat.coverUrl} />
-
-      <CategoryField categories={categories} selected={beat.categoryIds} />
 
       {error && (
         <p role="alert" className="text-sm">

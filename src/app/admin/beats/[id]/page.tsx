@@ -13,16 +13,13 @@ export default async function EditBeatPage({
   const beatId = Number(id);
   const supabase = await requireAdmin();
 
-  const [{ data: beat }, { data: categories }] = await Promise.all([
-    supabase
-      .from("beats")
-      .select(
-        "id, title, kind, price_cents, price_wav_cents, price_exclusive_cents, bpm, musical_key, description, cover_path, beat_categories(category_id)",
-      )
-      .eq("id", beatId)
-      .single(),
-    supabase.from("categories").select("id, name").order("name"),
-  ]);
+  const { data: beat } = await supabase
+    .from("beats")
+    .select(
+      "id, title, kind, price_cents, price_wav_cents, price_exclusive_cents, bpm, musical_key, description, cover_path",
+    )
+    .eq("id", beatId)
+    .single();
 
   if (!beat) notFound();
 
@@ -30,7 +27,6 @@ export default async function EditBeatPage({
     <div className="space-y-8">
       <h1 className="text-2xl font-bold tracking-tight">{beat.title}</h1>
       <EditBeatForm
-        categories={categories ?? []}
         beat={{
           title: beat.title,
           kind: beat.kind,
@@ -40,7 +36,6 @@ export default async function EditBeatPage({
           bpm: beat.bpm,
           musicalKey: beat.musical_key,
           description: beat.description,
-          categoryIds: (beat.beat_categories ?? []).map((link) => link.category_id),
           coverUrl: publicAssetUrl(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             beat.cover_path,

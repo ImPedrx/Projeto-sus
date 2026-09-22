@@ -41,7 +41,6 @@ function beatInputFrom(formData: FormData) {
     bpm: parseOptionalInt(formData.get("bpm")),
     musicalKey: String(formData.get("musicalKey") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim() || null,
-    categoryIds: formData.getAll("categoryIds").map((value) => Number(value)),
   });
 }
 
@@ -149,20 +148,6 @@ export async function createBeat(formData: FormData) {
     };
   }
 
-  const { error: linkError } = await supabase.from("beat_categories").insert(
-    parsed.data.categoryIds.map((categoryId) => ({
-      beat_id: beat.id,
-      category_id: categoryId,
-    })),
-  );
-
-  if (linkError) {
-    // A beat with no category would be invisible in the catalog, so undo the
-    // insert rather than leaving a half-created row.
-    await supabase.from("beats").delete().eq("id", beat.id);
-    return { error: "Não foi possível vincular as categorias." };
-  }
-
   revalidatePath("/admin");
   return { ok: true as const, id: beat.id };
 }
@@ -222,20 +207,6 @@ export async function updateBeat(id: number, formData: FormData) {
   if (coverPath) {
     await supabase.from("beats").update({ cover_path: coverPath }).eq("id", id);
   }
-
-  // Replace the category links wholesale — the set is tiny, and diffing buys
-  // nothing here.
-  await supabase.from("beat_categories").delete().eq("beat_id", id);
-  const { error: linkError } = await supabase
-    .from("beat_categories")
-    .insert(
-      parsed.data.categoryIds.map((categoryId) => ({
-        beat_id: id,
-        category_id: categoryId,
-      })),
-    );
-
-  if (linkError) return { error: "Não foi possível salvar as categorias." };
 
   revalidatePath("/admin");
   revalidatePath(`/admin/beats/${id}`);

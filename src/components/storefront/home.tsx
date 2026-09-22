@@ -2,16 +2,13 @@ import Link from "next/link";
 import MoltenMetal from "@/components/MoltenMetal/MoltenMetal";
 import { BeatCard } from "@/components/beat-card";
 import { createServerClient } from "@/lib/supabase/server";
-import { listPublishedBeats, listCategories } from "@/lib/beats/queries";
+import { listPublishedBeats } from "@/lib/beats/queries";
 import { copyFor, pathFor, type Locale } from "@/lib/i18n";
 
 export async function Home({ locale }: { locale: Locale }) {
   const t = copyFor(locale);
   const supabase = await createServerClient();
-  const [beats, categories] = await Promise.all([
-    listPublishedBeats(supabase, { limit: 8 }),
-    listCategories(supabase),
-  ]);
+  const beats = await listPublishedBeats(supabase, { limit: 8 });
 
   return (
     <main>
@@ -62,7 +59,6 @@ export async function Home({ locale }: { locale: Locale }) {
       <section className="border-b border-border">
         <div className="mono mx-auto flex max-w-6xl flex-wrap gap-x-8 gap-y-2 px-6 py-4 text-[11px] text-muted">
           <span>{t.statBeats(beats.length)}</span>
-          <span>{t.statCategories(categories.length)}</span>
           <span>{t.statDelivery}</span>
         </div>
       </section>
