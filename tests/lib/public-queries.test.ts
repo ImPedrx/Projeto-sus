@@ -18,10 +18,6 @@ describe("toStoreBeat", () => {
     master_wav_path: "masters/dark-night.wav",
     cover_path: "covers/dark-night.png",
     preview_path: "previews/dark-night.mp3",
-    beat_categories: [
-      { categories: { name: "Dark Trap", slug: "dark-trap" } },
-      { categories: null },
-    ],
   };
 
   it("maps the row into the shape the storefront renders", () => {
@@ -45,7 +41,6 @@ describe("toStoreBeat", () => {
         "https://proj.supabase.co/storage/v1/object/public/beat-public/covers/dark-night.png",
       previewUrl:
         "https://proj.supabase.co/storage/v1/object/public/beat-public/previews/dark-night.mp3",
-      categories: [{ name: "Dark Trap", slug: "dark-trap" }],
     });
   });
 

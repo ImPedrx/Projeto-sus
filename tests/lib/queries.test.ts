@@ -12,7 +12,7 @@ function stubClient(rows: unknown) {
 }
 
 describe("listBeatsForAdmin", () => {
-  it("flattens nested category names", async () => {
+  it("maps the row into the shape the admin renders", async () => {
     const rows = [
       {
         id: 1,
@@ -20,10 +20,6 @@ describe("listBeatsForAdmin", () => {
         kind: "beat",
         price_cents: 19900,
         status: "published",
-        beat_categories: [
-          { categories: { name: "Dark Trap" } },
-          { categories: { name: "Drill" } },
-        ],
         order_items: [{ count: 3 }],
       },
     ];
@@ -35,7 +31,6 @@ describe("listBeatsForAdmin", () => {
         kind: "beat",
         priceCents: 19900,
         status: "published",
-        categoryNames: ["Dark Trap", "Drill"],
         orderCount: 3,
       },
     ]);
@@ -51,7 +46,6 @@ describe("listBeatsForAdmin", () => {
         kind: "beat",
         price_cents: 9900,
         status: "draft",
-        beat_categories: [],
         order_items: [],
       },
     ];
@@ -61,18 +55,5 @@ describe("listBeatsForAdmin", () => {
 
   it("returns an empty list when there are no beats", async () => {
     expect(await listBeatsForAdmin(stubClient([]))).toEqual([]);
-  });
-
-  it("tolerates a beat with no categories", async () => {
-    const rows = [
-      {
-        id: 2,
-        title: "Órfão",
-        price_cents: 9900,
-        status: "draft",
-        beat_categories: [],
-      },
-    ];
-    expect((await listBeatsForAdmin(stubClient(rows)))[0].categoryNames).toEqual([]);
   });
 });

@@ -40,7 +40,6 @@ export default async function AdminHomePage() {
                 </Link>
                 <p className="text-sm text-muted">
                   {beat.kind === "service" ? "Serviço" : "Beat"} ·{" "}
-                  {beat.categoryNames.join(", ") || "Sem categoria"} ·{" "}
                   {beat.priceCents === null
                     ? "preço padrão"
                     : formatPrice(beat.priceCents)}

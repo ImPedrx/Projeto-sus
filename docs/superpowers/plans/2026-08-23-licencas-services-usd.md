@@ -1,10 +1,12 @@
 # Sus — licenças, services, USD e ajustes de layout
 
+> **Nota (pós-lançamento):** o conceito de categoria foi removido do produto a pedido do cliente. A menção a categorias abaixo é histórica.
+
 ## Decisões
 
 - Preços de licença: padrão global no código (MP3 $60, WAV $120) com override por beat no admin.
 - EXCLUSIVE: sem preço fixo — "sob consulta" quando o beat não tiver valor próprio.
-- Services: novo tipo na tabela `beats` (`kind = 'beat' | 'service'`), reaproveitando cadastro, capa, categorias e carrinho.
+- Services: novo tipo na tabela `beats` (`kind = 'beat' | 'service'`), reaproveitando cadastro, capa e carrinho.
 - USD: apenas troca do formatador. `price_cents` passa a ser centavos de dólar; os valores já cadastrados mantêm o número e são reajustados no admin.
 
 ## Etapas

@@ -34,7 +34,6 @@ export default async function AdminLayout({
         <nav className="flex gap-6 text-sm">
           <Link href="/admin/metricas">Visão geral</Link>
           <Link href="/admin">Beats</Link>
-          <Link href="/admin/categorias">Categorias</Link>
           <Link href="/admin/pedidos" className="flex items-center gap-2">
             Pedidos
             {/* The count is the whole point of the link: an order that nobody

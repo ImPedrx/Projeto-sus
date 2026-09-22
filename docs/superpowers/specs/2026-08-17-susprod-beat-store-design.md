@@ -9,7 +9,7 @@ portfolio. Visual style: dark trap aesthetic, black-and-white palette.
 
 ## Scope for v1
 
-1. **Beat catalog** — finished beats browsable by category, with preview
+1. **Beat catalog** — finished beats browsable as a flat list, with preview
    playback and purchase.
 2. **Audio player** — persistent player with full transport controls.
 3. **"Chamar o SUS"** — a call-to-action button anywhere in the catalog that
@@ -25,10 +25,8 @@ Deferred to a later cycle: the about/bio section.
 **Stack**: Next.js + React (App Router), shadcn/ui for components.
 Full-stack in one framework, good admin ergonomics, easy deploy.
 
-**Catalog and categories**: beats are grouped by category — the type/genre of
-the track (e.g. dark trap, drill, boom bap, R&B). A beat belongs to at least
-one category. The catalog page filters by category; categories are managed
-from the admin panel alongside the beats themselves.
+**Catalog**: a single flat list of beats, newest first. No category or genre
+grouping.
 
 **Pricing**: one flat price per beat. No license tiers.
 
@@ -44,8 +42,8 @@ waveform or progress bar), volume with mute, track title and cover art, and
 next/previous through the current filtered list.
 
 **Catalog management**: admin upload flow. SusProd signs in and uploads the
-audio files, cover art, title, category and price through the site — no
-deploy needed to add a beat.
+audio files, cover art, title and price through the site — no deploy needed to
+add a beat.
 
 **Delivery after purchase**: automated. Payment webhook confirms the sale and
 emails a signed, expiring download link for the MP3 and WAV.
@@ -69,5 +67,5 @@ email notification for each new request.
 
 1. Hand this spec to the `writing-plans` skill and produce the v1 plan.
 2. Build order suggested by dependency: data model and Supabase setup →
-   admin auth and beat upload → public catalog with categories → player →
+   admin auth and beat upload → public catalog → player →
    checkout and delivery → request form and admin queue.

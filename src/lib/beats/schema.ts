@@ -1,15 +1,5 @@
 import { z } from "zod";
 
-export const categoryInputSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Informe um nome.")
-    .max(40, "Nome muito longo."),
-});
-
-export type CategoryInput = z.infer<typeof categoryInputSchema>;
-
 // A price field that may be left empty. Null means "use the site default" for
 // the MP3 and WAV licences, and "quote it by hand" for the exclusive one.
 function optionalPrice(label: string) {
@@ -53,9 +43,6 @@ export const beatInputSchema = z.object({
     // null. Both land as null.
     .nullable()
     .default(null),
-  categoryIds: z
-    .array(z.number().int().positive())
-    .min(1, "Escolha ao menos uma categoria."),
 })
   // A service is priced by the MP3 column alone and never falls back to a beat
   // default, so it is the one case where a price is required. The database

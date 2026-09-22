@@ -76,12 +76,6 @@ export function BeatDialog({
           ],
           [t.specFormats, beat.hasWav ? "MP3 · WAV" : "MP3"],
         ] as Array<[string, string]>)),
-    [
-      t.specCategories,
-      beat.categories.length
-        ? beat.categories.map((category) => category.name).join(", ")
-        : t.cardNoCategory,
-    ],
     [t.specPosted, formatPostedDate(beat.createdAt, locale) || t.specUnknown],
   ];
 

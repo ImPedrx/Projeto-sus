@@ -3,19 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { uploadAssets, type TargetRequest } from "@/lib/beats/upload-client";
-import { CategoryField } from "./category-field";
 import { CoverField } from "./cover-field";
 import { KindField, PriceFields } from "./price-fields";
 
-type Category = { id: number; name: string };
 type Result = { error: string } | { ok: true; id: number };
 
 export function BeatForm({
-  categories,
   action,
   uploadTargets,
 }: {
-  categories: Category[];
   action: (formData: FormData) => Promise<Result>;
   uploadTargets: (
     title: string,
@@ -116,8 +112,6 @@ export function BeatForm({
         />
       </div>
       </div>
-
-      <CategoryField categories={categories} />
 
       {kind === "beat" && (
       <div className="space-y-5 border-t border-border pt-6">

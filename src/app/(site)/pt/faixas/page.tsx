@@ -13,11 +13,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function CatalogPagePt({
-  searchParams,
-}: {
-  searchParams: Promise<{ categoria?: string }>;
-}) {
-  const { categoria } = await searchParams;
-  return <Catalog locale="pt" categorySlug={categoria} />;
+export default function CatalogPagePt() {
+  return <Catalog locale="pt" />;
 }

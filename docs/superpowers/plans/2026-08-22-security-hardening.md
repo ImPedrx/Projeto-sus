@@ -3,6 +3,8 @@
 Data: 2026-08-22
 Origem: revisão de terceiro (pentest de reconhecimento) + auditoria do código-fonte real.
 
+> **Nota (pós-lançamento):** o conceito de categoria/gênero foi removido do produto a pedido do cliente. Referências a `categories`, `beat_categories` e `/admin/categorias` abaixo são históricas.
+
 ## Contexto e veredito
 
 A revisão externa trabalhou só de fora (caixa-preta) e classificou vários achados

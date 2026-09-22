@@ -27,30 +27,6 @@ export type Database = {
         Update: { user_id?: string; created_at?: string };
         Relationships: [];
       };
-      categories: {
-        Row: {
-          id: number;
-          name: string;
-          slug: string;
-          position: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: never;
-          name: string;
-          slug: string;
-          position?: number;
-          created_at?: string;
-        };
-        Update: {
-          id?: never;
-          name?: string;
-          slug?: string;
-          position?: number;
-          created_at?: string;
-        };
-        Relationships: [];
-      };
       beats: {
         Row: {
           id: number;
@@ -113,25 +89,6 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [];
-      };
-      beat_categories: {
-        Row: { beat_id: number; category_id: number };
-        Insert: { beat_id: number; category_id: number };
-        Update: { beat_id?: number; category_id?: number };
-        Relationships: [
-          {
-            foreignKeyName: "beat_categories_beat_id_fkey";
-            columns: ["beat_id"];
-            referencedRelation: "beats";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "beat_categories_category_id_fkey";
-            columns: ["category_id"];
-            referencedRelation: "categories";
-            referencedColumns: ["id"];
-          },
-        ];
       };
       orders: {
         Row: {
