@@ -39,7 +39,7 @@ export function BeatRow({ beat, locale }: { beat: StoreBeat; locale: Locale }) {
             alt=""
             fill
             sizes="64px"
-            className="object-cover grayscale"
+            className="object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center gap-[2px] px-2">
